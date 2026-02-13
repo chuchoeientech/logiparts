@@ -1,34 +1,10 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
-import { Product } from '../types';
+import { products } from '../data/mockData';
 import ProductCard from '../components/ProductCard';
 import CategoryCard from '../components/CategoryCard';
 
 export default function Home() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .eq('is_featured', true)
-          .limit(6);
-
-        if (error) throw error;
-        setFeaturedProducts(data || []);
-      } catch (error) {
-        console.error('Error fetching featured products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFeaturedProducts();
-  }, []);
+  const featuredProducts = products.filter(p => p.is_featured).slice(0, 6);
 
   const categories = [
     {
@@ -50,11 +26,14 @@ export default function Home() {
 
   return (
     <div>
-      <section className="relative h-[600px] flex items-center justify-center bg-gradient-to-r from-[#111111] to-[#1A1A1A] mt-[128px]">
+      <section
+        className="relative flex items-center justify-center bg-gradient-to-r from-[#111111] to-[#1A1A1A]"
+        style={{ marginTop: '80px', minHeight: 'calc(100vh - 80px)' }}
+      >
         <div
           className="absolute inset-0 opacity-20"
           style={{
-            backgroundImage: 'url(https://images.pexels.com/photos/3806248/pexels-photo-3806248.jpeg?auto=compress&cs=tinysrgb&w=1920)',
+            backgroundImage: 'url(https://images.pexels.com/photos/1409999/pexels-photo-1409999.jpeg?auto=compress&cs=tinysrgb&w=1920)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -91,19 +70,13 @@ export default function Home() {
             <p className="text-gray-600 text-lg">Los repuestos más buscados por nuestros clientes</p>
           </div>
 
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
 
-          {!loading && featuredProducts.length === 0 && (
+          {featuredProducts.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-600 text-lg">No hay productos destacados disponibles en este momento.</p>
             </div>

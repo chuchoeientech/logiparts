@@ -1,23 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Menu, X, User } from 'lucide-react';
+import { Search, Menu, X } from 'lucide-react';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="w-full fixed top-0 z-50">
-      <div className="bg-[#111111] text-white py-2">
-        <div className="container mx-auto px-4 flex justify-end items-center gap-6 text-sm">
-          <Link to="/cuenta" className="hover:text-primary transition-colors flex items-center gap-1">
-            <User size={16} />
-            Mi Cuenta
-          </Link>
-          <Link to="/login" className="hover:text-primary transition-colors">
-            Ingresar / Registrarse
-          </Link>
-        </div>
-      </div>
+
 
       <nav className="bg-white shadow-md">
         <div className="container mx-auto px-4">

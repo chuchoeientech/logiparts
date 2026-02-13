@@ -1,39 +1,19 @@
-import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { useState } from 'react';
+import { products as initialProducts, categories as initialCategories } from '../data/mockData';
 import { Product, Category } from '../types';
 import ProductCard from '../components/ProductCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Productos() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products] = useState<Product[]>(
+    [...initialProducts].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+  );
+  const [categories] = useState<Category[]>(
+    [...initialCategories].sort((a, b) => a.name.localeCompare(b.name))
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [productsResult, categoriesResult] = await Promise.all([
-          supabase.from('products').select('*').order('created_at', { ascending: false }),
-          supabase.from('categories').select('*').order('name'),
-        ]);
-
-        if (productsResult.error) throw productsResult.error;
-        if (categoriesResult.error) throw categoriesResult.error;
-
-        setProducts(productsResult.data || []);
-        setCategories(categoriesResult.data || []);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const filteredProducts = selectedCategory === 'all'
     ? products
@@ -50,7 +30,7 @@ export default function Productos() {
   };
 
   return (
-    <div className="min-h-screen bg-light-gray pt-[128px]">
+    <div className="bg-light-gray" style={{ marginTop: '80px', minHeight: 'calc(100vh - 80px)' }}>
       <div className="bg-dark-gray text-white py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Nuestros Productos</h1>
@@ -72,11 +52,10 @@ export default function Productos() {
                       setSelectedCategory('all');
                       setCurrentPage(1);
                     }}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                      selectedCategory === 'all'
-                        ? 'bg-primary text-black font-semibold'
-                        : 'hover:bg-gray-100 text-gray-700'
-                    }`}
+                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${selectedCategory === 'all'
+                      ? 'bg-primary text-black font-semibold'
+                      : 'hover:bg-gray-100 text-gray-700'
+                      }`}
                   >
                     Todas las categorías
                   </button>
@@ -87,11 +66,10 @@ export default function Productos() {
                         setSelectedCategory(category.id);
                         setCurrentPage(1);
                       }}
-                      className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                        selectedCategory === category.id
-                          ? 'bg-primary text-black font-semibold'
-                          : 'hover:bg-gray-100 text-gray-700'
-                      }`}
+                      className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${selectedCategory === category.id
+                        ? 'bg-primary text-black font-semibold'
+                        : 'hover:bg-gray-100 text-gray-700'
+                        }`}
                     >
                       {category.name}
                     </button>
@@ -138,58 +116,49 @@ export default function Productos() {
               </p>
             </div>
 
-            {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              {currentProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+
+            {currentProducts.length === 0 && (
               <div className="text-center py-20">
-                <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+                <p className="text-gray-600 text-lg">No se encontraron productos.</p>
               </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                  {currentProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
+            )}
 
-                {currentProducts.length === 0 && (
-                  <div className="text-center py-20">
-                    <p className="text-gray-600 text-lg">No se encontraron productos.</p>
-                  </div>
-                )}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={20} />
+                </button>
 
-                {totalPages > 1 && (
-                  <div className="flex justify-center items-center gap-2">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <ChevronLeft size={20} />
-                    </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-colors ${currentPage === page
+                      ? 'bg-primary text-black'
+                      : 'border border-gray-300 hover:bg-gray-100'
+                      }`}
+                  >
+                    {page}
+                  </button>
+                ))}
 
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <button
-                        key={page}
-                        onClick={() => handlePageChange(page)}
-                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                          currentPage === page
-                            ? 'bg-primary text-black'
-                            : 'border border-gray-300 hover:bg-gray-100'
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    ))}
-
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <ChevronRight size={20} />
-                    </button>
-                  </div>
-                )}
-              </>
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
             )}
           </main>
         </div>
