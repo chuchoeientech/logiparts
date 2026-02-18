@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react';
 
 export default function Contacto() {
@@ -23,15 +24,39 @@ export default function Contacto() {
   };
 
   return (
-    <div className="min-h-screen pt-[128px]">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen pt-[128px]"
+    >
       <div className="bg-dark-gray text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Contáctanos</h1>
-          <p className="text-gray-300 text-lg">Estamos aquí para ayudarte con tus necesidades de repuestos</p>
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="text-4xl md:text-5xl font-bold mb-4"
+          >
+            Contáctanos
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-gray-300 text-lg"
+          >
+            Estamos aquí para ayudarte con tus necesidades de repuestos
+          </motion.p>
         </div>
       </div>
 
-      <section className="py-20 bg-light-gray">
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.5 }}
+        className="py-20 bg-light-gray"
+      >
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
             <div>
@@ -195,7 +220,7 @@ export default function Contacto() {
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Search, Menu, X } from 'lucide-react';
 
 export default function Header() {
@@ -13,7 +14,13 @@ export default function Header() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
             <Link to="/" className="flex items-center">
-              <span className="text-3xl font-bold text-primary">LOGISPARTS</span>
+              <motion.span
+                initial={{ opacity: 0.8 }}
+                animate={{ opacity: 1 }}
+                className="text-3xl font-bold text-primary"
+              >
+                LOGISPARTS
+              </motion.span>
             </Link>
 
             <div className="hidden md:flex items-center gap-8">

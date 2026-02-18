@@ -1,23 +1,82 @@
-import { useState } from 'react';
-import { products as initialProducts, categories as initialCategories } from '../data/mockData';
-import { Product, Category } from '../types';
+import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { categoriesApi, type CategoryApi } from '../api/categories';
+import { productsApi, productImageUrl, type ProductApi } from '../api/products';
+import { Product } from '../types';
 import ProductCard from '../components/ProductCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+function mapProduct(p: ProductApi): Product {
+  return {
+    id: p.id,
+    name: p.title,
+    description: p.description ?? '',
+    price: Number(p.price),
+    image_url: productImageUrl(p) ?? '',
+    category_id: p.categoryId,
+    is_featured: p.isFeatured,
+    created_at: p.createdAt,
+  };
+}
+
 export default function Productos() {
-  const [products] = useState<Product[]>(
-    [...initialProducts].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-  );
-  const [categories] = useState<Category[]>(
-    [...initialCategories].sort((a, b) => a.name.localeCompare(b.name))
-  );
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchParams] = useSearchParams();
+  const categoriaSlug = searchParams.get('categoria');
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<CategoryApi[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
+
   const productsPerPage = 12;
 
-  const filteredProducts = selectedCategory === 'all'
-    ? products
-    : products.filter(p => p.category_id === selectedCategory);
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const [categoriesRes, productsRes] = await Promise.all([
+          categoriesApi.getAll(),
+          productsApi.getAll(),
+        ]);
+        if (!cancelled) {
+          setCategories(categoriesRes.sort((a, b) => a.name.localeCompare(b.name)));
+          setProducts(
+            productsRes
+              .map(mapProduct)
+              .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          );
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'Error al cargar productos');
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, []);
+
+  const categoryIdFromSlug = useMemo(() => {
+    if (!categoriaSlug) return null;
+    const cat = categories.find((c) => c.slug === categoriaSlug);
+    return cat?.id ?? null;
+  }, [categoriaSlug, categories]);
+
+  useEffect(() => {
+    if (categoryIdFromSlug) setSelectedCategoryId(categoryIdFromSlug);
+  }, [categoryIdFromSlug]);
+
+  const filteredProducts =
+    selectedCategoryId === 'all'
+      ? products
+      : products.filter((p) => p.category_id === selectedCategoryId);
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -30,11 +89,31 @@ export default function Productos() {
   };
 
   return (
-    <div className="bg-light-gray" style={{ marginTop: '80px', minHeight: 'calc(100vh - 80px)' }}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="bg-light-gray"
+      style={{ marginTop: '80px', minHeight: 'calc(100vh - 80px)' }}
+    >
       <div className="bg-dark-gray text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Nuestros Productos</h1>
-          <p className="text-gray-300 text-lg">Encuentra el repuesto perfecto para tu vehículo</p>
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="text-4xl md:text-5xl font-bold mb-4"
+          >
+            Nuestros Productos
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-gray-300 text-lg"
+          >
+            Encuentra el repuesto perfecto para tu vehículo
+          </motion.p>
         </div>
       </div>
 
@@ -49,13 +128,14 @@ export default function Productos() {
                 <div className="space-y-2">
                   <button
                     onClick={() => {
-                      setSelectedCategory('all');
+                      setSelectedCategoryId('all');
                       setCurrentPage(1);
                     }}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${selectedCategory === 'all'
-                      ? 'bg-primary text-black font-semibold'
-                      : 'hover:bg-gray-100 text-gray-700'
-                      }`}
+                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                      selectedCategoryId === 'all'
+                        ? 'bg-primary text-black font-semibold'
+                        : 'hover:bg-gray-100 text-gray-700'
+                    }`}
                   >
                     Todas las categorías
                   </button>
@@ -63,13 +143,14 @@ export default function Productos() {
                     <button
                       key={category.id}
                       onClick={() => {
-                        setSelectedCategory(category.id);
+                        setSelectedCategoryId(category.id);
                         setCurrentPage(1);
                       }}
-                      className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${selectedCategory === category.id
-                        ? 'bg-primary text-black font-semibold'
-                        : 'hover:bg-gray-100 text-gray-700'
-                        }`}
+                      className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                        selectedCategoryId === category.id
+                          ? 'bg-primary text-black font-semibold'
+                          : 'hover:bg-gray-100 text-gray-700'
+                      }`}
                     >
                       {category.name}
                     </button>
@@ -110,59 +191,75 @@ export default function Productos() {
           </aside>
 
           <main className="flex-1">
-            <div className="mb-6 flex justify-between items-center">
-              <p className="text-gray-600">
-                Mostrando {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, filteredProducts.length)} de {filteredProducts.length} productos
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-              {currentProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-
-            {currentProducts.length === 0 && (
-              <div className="text-center py-20">
-                <p className="text-gray-600 text-lg">No se encontraron productos.</p>
-              </div>
+            {loading && (
+              <div className="text-center py-12 text-gray-500">Cargando productos...</div>
             )}
+            {error && (
+              <div className="text-center py-12 text-red-600">{error}</div>
+            )}
+            {!loading && !error && (
+              <>
+                <div className="mb-6 flex justify-between items-center">
+                  <p className="text-gray-600">
+                    Mostrando {indexOfFirstProduct + 1}–
+                    {Math.min(indexOfLastProduct, filteredProducts.length)} de {filteredProducts.length} productos
+                  </p>
+                </div>
 
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ChevronLeft size={20} />
-                </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                  {currentProducts.map((product, index) => (
+                    <ProductCard key={product.id} product={product} index={index} />
+                  ))}
+                </div>
 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`px-4 py-2 rounded-lg font-semibold transition-colors ${currentPage === page
-                      ? 'bg-primary text-black'
-                      : 'border border-gray-300 hover:bg-gray-100'
-                      }`}
+                {currentProducts.length === 0 && (
+                  <div className="text-center py-20">
+                    <p className="text-gray-600 text-lg">No se encontraron productos.</p>
+                  </div>
+                )}
+
+                {totalPages > 1 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex justify-center items-center gap-2"
                   >
-                    {page}
-                  </button>
-                ))}
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
 
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ChevronRight size={20} />
-                </button>
-              </div>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                          currentPage === page
+                            ? 'bg-primary text-black'
+                            : 'border border-gray-300 hover:bg-gray-100'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+                  </motion.div>
+                )}
+              </>
             )}
           </main>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
