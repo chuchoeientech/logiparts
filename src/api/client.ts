@@ -1,4 +1,9 @@
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+// En Netlify la variable DEBE llamarse exactamente VITE_API_URL (con prefijo VITE_).
+// Vite solo expone al cliente las variables que empiezan por VITE_. Tras cambiar la variable, redeploy.
+const API_BASE =
+  (typeof window !== 'undefined' && (window as Window & { __VITE_API_URL__?: string }).__VITE_API_URL__) ||
+  import.meta.env.VITE_API_URL ||
+  'http://localhost:3000';
 
 /** URL pública para mostrar imágenes almacenadas en el servidor */
 export function getUploadsUrl(path: string | null | undefined): string | null {
@@ -13,7 +18,7 @@ async function request<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const url = path.startsWith('http') ? path : `${API_BASE}${path}`;
-  const headers: HeadersInit = { ...options.headers };
+  const headers: Record<string, string> = { ...(options.headers as Record<string, string> | undefined) };
   if (!(options.body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
   }
