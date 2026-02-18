@@ -1,5 +1,6 @@
-// En Netlify la variable DEBE llamarse exactamente VITE_API_URL (con prefijo VITE_).
-// Vite solo expone al cliente las variables que empiezan por VITE_. Tras cambiar la variable, redeploy.
+// En Netlify: Site configuration → Environment variables → añadir:
+//   Key: VITE_API_URL   Value: https://TU-BACKEND.up.railway.app  (la URL de Railway, NO la de Netlify)
+// Vite solo expone variables con prefijo VITE_. Después de guardar, hacer "Trigger deploy" para que el build use la variable.
 const API_BASE =
   (typeof window !== 'undefined' && (window as Window & { __VITE_API_URL__?: string }).__VITE_API_URL__) ||
   import.meta.env.VITE_API_URL ||
@@ -23,12 +24,24 @@ async function request<T>(
     headers['Content-Type'] = 'application/json';
   }
   const res = await fetch(url, { ...options, headers });
+  const text = await res.text();
+
+  const contentType = res.headers.get('Content-Type') ?? '';
+  if (contentType.includes('text/html')) {
+    throw new Error(
+      `La API devolvió HTML en lugar de JSON. Revisa que VITE_API_URL en Netlify apunte a tu backend en Railway (ej: https://tu-app.up.railway.app), no a la URL de Netlify. Request: ${url}`
+    );
+  }
+
   if (!res.ok) {
-    const text = await res.text();
     throw new Error(text || `Error ${res.status}`);
   }
   if (res.status === 204) return undefined as T;
-  return res.json();
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    throw new Error(`Respuesta no es JSON válido: ${text.slice(0, 100)}...`);
+  }
 }
 
 export const api = {
