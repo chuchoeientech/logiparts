@@ -10,6 +10,8 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminCategorias from './pages/admin/AdminCategorias';
 import AdminProductos from './pages/admin/AdminProductos';
+import AdminVehiculos from './pages/admin/AdminVehiculos';
+import AdminBulkUpload from './pages/admin/AdminBulkUpload';
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
             <Route index element={<Navigate to="categorias" replace />} />
             <Route path="categorias" element={<AdminCategorias />} />
             <Route path="productos" element={<AdminProductos />} />
+            <Route path="vehiculos" element={<AdminVehiculos />} />
+            <Route path="bulk" element={<AdminBulkUpload />} />
           </Route>
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />

@@ -12,13 +12,12 @@ const stagger = { animate: { transition: { staggerChildren: 0.08 } } };
 
 function mapProduct(p: ProductApi): Product {
   return {
-    id: p.id,
-    name: p.title,
+    ...p,
+    name: p.descripcion || 'Sin nombre',
     description: p.description ?? '',
-    price: Number(p.price),
-    image_url: productImageUrl(p) ?? 'https://images.pexels.com/photos/3806248/pexels-photo-3806248.jpeg?auto=compress&cs=tinysrgb&w=600',
+    price: Number(p.costoFinal),
+    image_url: productImageUrl(p),
     category_id: p.categoryId,
-    is_featured: p.isFeatured,
     created_at: p.createdAt,
   };
 }
@@ -179,12 +178,12 @@ export default function Home() {
           )}
           {!loading && !error && (
             <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-8" variants={stagger}>
-              {categories.map((category, index) => (
+              {categories.map((category) => (
                 <motion.div key={category.id} variants={fadeInUp}>
                   <CategoryCard
                     name={category.name}
                     slug={category.slug}
-                    imageUrl={categoryImageUrl(category) ?? 'https://images.pexels.com/photos/3806248/pexels-photo-3806248.jpeg?auto=compress&cs=tinysrgb&w=1200'}
+                    imageUrl={categoryImageUrl(category)}
                   />
                 </motion.div>
               ))}

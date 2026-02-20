@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import { Navigate } from 'react-router-dom';
-import { LayoutDashboard, FolderOpen, Package, LogOut } from 'lucide-react';
+import { LayoutDashboard, FolderOpen, Package, Car, LogOut } from 'lucide-react';
 
 export default function AdminLayout() {
   const { isAuthenticated, logout } = useAdminAuth();
@@ -17,8 +17,7 @@ export default function AdminLayout() {
   };
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-      isActive ? 'bg-primary text-dark-gray font-semibold' : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+    `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive ? 'bg-primary text-dark-gray font-semibold' : 'text-gray-300 hover:bg-gray-800 hover:text-white'
     }`;
 
   return (
@@ -39,6 +38,14 @@ export default function AdminLayout() {
           <NavLink to="/admin/productos" className={linkClass}>
             <Package size={20} />
             Productos
+          </NavLink>
+          <NavLink to="/admin/vehiculos" className={linkClass}>
+            <Car size={20} />
+            Vehículos
+          </NavLink>
+          <NavLink to="/admin/bulk" className={linkClass}>
+            <FolderOpen size={20} />
+            Carga Masiva
           </NavLink>
         </nav>
         <div className="p-4 border-t border-gray-700">

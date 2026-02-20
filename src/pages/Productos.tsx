@@ -5,17 +5,17 @@ import { categoriesApi, type CategoryApi } from '../api/categories';
 import { productsApi, productImageUrl, type ProductApi } from '../api/products';
 import { Product } from '../types';
 import ProductCard from '../components/ProductCard';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Car } from 'lucide-react';
+import { vehiclesApi, type VehicleApi } from '../api/vehicles';
 
 function mapProduct(p: ProductApi): Product {
   return {
-    id: p.id,
-    name: p.title,
-    description: p.description ?? '',
-    price: Number(p.price),
-    image_url: productImageUrl(p) ?? '',
+    ...p,
+    name: p.descripcion || 'Sin nombre',
+    price: Number(p.costoFinal),
+    image_url: productImageUrl(p),
+    description: p.description || '',
     category_id: p.categoryId,
-    is_featured: p.isFeatured,
     created_at: p.createdAt,
   };
 }
@@ -26,9 +26,11 @@ export default function Productos() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<CategoryApi[]>([]);
+  const [vehicles, setVehicles] = useState<VehicleApi[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all');
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
 
   const productsPerPage = 12;
@@ -39,12 +41,14 @@ export default function Productos() {
       setLoading(true);
       setError(null);
       try {
-        const [categoriesRes, productsRes] = await Promise.all([
+        const [categoriesRes, productsRes, vehiclesRes] = await Promise.all([
           categoriesApi.getAll(),
           productsApi.getAll(),
+          vehiclesApi.getAll(),
         ]);
         if (!cancelled) {
           setCategories(categoriesRes.sort((a, b) => a.name.localeCompare(b.name)));
+          setVehicles(vehiclesRes);
           setProducts(
             productsRes
               .map(mapProduct)
@@ -73,10 +77,13 @@ export default function Productos() {
     if (categoryIdFromSlug) setSelectedCategoryId(categoryIdFromSlug);
   }, [categoryIdFromSlug]);
 
-  const filteredProducts =
-    selectedCategoryId === 'all'
-      ? products
-      : products.filter((p) => p.category_id === selectedCategoryId);
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      const matchCategory = selectedCategoryId === 'all' || p.categoryId === selectedCategoryId;
+      const matchVehicle = selectedVehicleId === 'all' || p.vehicles?.some(v => v.id === selectedVehicleId);
+      return matchCategory && matchVehicle;
+    });
+  }, [products, selectedCategoryId, selectedVehicleId]);
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -93,7 +100,7 @@ export default function Productos() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="bg-light-gray"
+      className="bg-light-gray overflow-x-hidden"
       style={{ marginTop: '80px', minHeight: 'calc(100vh - 80px)' }}
     >
       <div className="bg-dark-gray text-white py-12">
@@ -131,11 +138,10 @@ export default function Productos() {
                       setSelectedCategoryId('all');
                       setCurrentPage(1);
                     }}
-                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                      selectedCategoryId === 'all'
-                        ? 'bg-primary text-black font-semibold'
-                        : 'hover:bg-gray-100 text-gray-700'
-                    }`}
+                    className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${selectedCategoryId === 'all'
+                      ? 'bg-primary text-black font-semibold'
+                      : 'hover:bg-gray-100 text-gray-700'
+                      }`}
                   >
                     Todas las categorías
                   </button>
@@ -146,15 +152,36 @@ export default function Productos() {
                         setSelectedCategoryId(category.id);
                         setCurrentPage(1);
                       }}
-                      className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                        selectedCategoryId === category.id
-                          ? 'bg-primary text-black font-semibold'
-                          : 'hover:bg-gray-100 text-gray-700'
-                      }`}
+                      className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${selectedCategoryId === category.id
+                        ? 'bg-primary text-black font-semibold'
+                        : 'hover:bg-gray-100 text-gray-700'
+                        }`}
                     >
                       {category.name}
                     </button>
                   ))}
+                </div>
+              </div>
+
+              <div className="mb-8">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">Vehículos</h4>
+                <div className="relative mb-4">
+                  <select
+                    value={selectedVehicleId}
+                    onChange={(e) => {
+                      setSelectedVehicleId(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="w-full pl-10 pr-4 py-2 bg-gray-100 border-none rounded-lg text-gray-700 focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
+                  >
+                    <option value="all">Todos los vehículos</option>
+                    {vehicles.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        {v.nombreMarca} {v.nombreModelo} ({v.anio})
+                      </option>
+                    ))}
+                  </select>
+                  <Car className="absolute left-3 top-2.5 text-gray-400" size={18} />
                 </div>
               </div>
 
@@ -190,7 +217,7 @@ export default function Productos() {
             </div>
           </aside>
 
-          <main className="flex-1">
+          <main className="flex-1 min-w-0">
             {loading && (
               <div className="text-center py-12 text-gray-500">Cargando productos...</div>
             )}
@@ -236,11 +263,10 @@ export default function Productos() {
                       <button
                         key={page}
                         onClick={() => handlePageChange(page)}
-                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                          currentPage === page
-                            ? 'bg-primary text-black'
-                            : 'border border-gray-300 hover:bg-gray-100'
-                        }`}
+                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${currentPage === page
+                          ? 'bg-primary text-black'
+                          : 'border border-gray-300 hover:bg-gray-100'
+                          }`}
                       >
                         {page}
                       </button>

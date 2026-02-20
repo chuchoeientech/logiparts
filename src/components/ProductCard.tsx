@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Product } from '../types';
+import { Package } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -31,12 +32,19 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           whileHover={{ y: -4, transition: { duration: 0.2 } }}
           className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden h-full flex flex-col"
         >
-          <div className="relative h-56 overflow-hidden bg-gray-100">
-            <motion.img
-              src={product.image_url || 'https://images.pexels.com/photos/3806248/pexels-photo-3806248.jpeg?auto=compress&cs=tinysrgb&w=600'}
-              alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-            />
+          <div className="relative h-56 overflow-hidden bg-gray-100 flex items-center justify-center">
+            {product.image_url ? (
+              <motion.img
+                src={product.image_url}
+                alt={product.name}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center text-gray-400">
+                <Package size={48} strokeWidth={1.5} />
+                <span className="text-xs uppercase tracking-widest mt-2 font-bold opacity-50">Sin imágen</span>
+              </div>
+            )}
           </div>
 
           <div className="p-5 flex-1 flex flex-col">

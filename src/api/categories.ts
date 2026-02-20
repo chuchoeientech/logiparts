@@ -6,6 +6,7 @@ export interface CategoryApi {
   slug: string;
   description: string | null;
   imageUrl: string | null;
+  codLinea: number | null;
   createdAt: string;
 }
 
@@ -13,12 +14,14 @@ export interface CreateCategoryBody {
   name: string;
   slug: string;
   description?: string;
+  codLinea?: number;
 }
 
 export interface UpdateCategoryBody {
   name?: string;
   slug?: string;
   description?: string;
+  codLinea?: number;
 }
 
 /** Devuelve la URL completa para mostrar la imagen de una categoría */

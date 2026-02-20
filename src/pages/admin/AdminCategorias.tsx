@@ -5,10 +5,11 @@ import {
   type CategoryApi,
   type CreateCategoryBody,
 } from '../../api/categories';
-import { Plus, Pencil, Trash2, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, FolderOpen, Search } from 'lucide-react';
 
 export default function AdminCategorias() {
   const [list, setList] = useState<CategoryApi[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -17,6 +18,7 @@ export default function AdminCategorias() {
     name: '',
     slug: '',
     description: '',
+    codLinea: undefined,
     imageFile: null,
   });
   const [saving, setSaving] = useState(false);
@@ -35,13 +37,22 @@ export default function AdminCategorias() {
     }
   };
 
+  const filteredList = list.filter(c => {
+    const search = searchTerm.toLowerCase();
+    return (
+      c.name.toLowerCase().includes(search) ||
+      (c.codLinea?.toString().includes(search)) ||
+      c.slug.toLowerCase().includes(search)
+    );
+  });
+
   useEffect(() => {
     load();
   }, []);
 
   const openCreate = () => {
     setEditingId(null);
-    setForm({ name: '', slug: '', description: '', imageFile: null });
+    setForm({ name: '', slug: '', description: '', codLinea: undefined, imageFile: null });
     setModalOpen(true);
   };
 
@@ -51,6 +62,7 @@ export default function AdminCategorias() {
       name: c.name,
       slug: c.slug,
       description: c.description ?? '',
+      codLinea: c.codLinea ?? undefined,
       imageFile: null,
     });
     setModalOpen(true);
@@ -65,6 +77,7 @@ export default function AdminCategorias() {
       formData.append('name', form.name);
       formData.append('slug', form.slug);
       if (form.description) formData.append('description', form.description);
+      if (form.codLinea !== undefined) formData.append('codLinea', String(form.codLinea));
       if (form.imageFile) formData.append('image', form.imageFile);
       if (editingId) {
         await categoriesApi.updateWithImage(editingId, formData);
@@ -102,20 +115,35 @@ export default function AdminCategorias() {
   const imageUrl = form.imageFile
     ? URL.createObjectURL(form.imageFile)
     : editingId
-      ? categoryImageUrl(list.find((c) => c.id === editingId) ?? null)
+      ? categoryImageUrl(list.find((c) => c.id === editingId)!)
       : null;
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Categorías</h1>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-dark-gray font-semibold rounded-lg hover:opacity-90"
-        >
-          <Plus size={20} />
-          Nueva categoría
-        </button>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Categorías</h1>
+          <p className="text-sm text-gray-500">Gestioná las líneas de productos</p>
+        </div>
+        <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
+          <div className="relative flex-1 sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Buscar categoría..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+            />
+          </div>
+          <button
+            onClick={openCreate}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-dark-gray font-semibold rounded-lg hover:opacity-90 transition-opacity whitespace-nowrap shadow-sm"
+          >
+            <Plus size={20} />
+            Nueva categoría
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -132,15 +160,17 @@ export default function AdminCategorias() {
             <thead className="bg-gray-100">
               <tr>
                 <th className="text-left px-4 py-3 text-gray-700 font-semibold">Nombre</th>
+                <th className="text-left px-4 py-3 text-gray-700 font-semibold">Cód. Línea</th>
                 <th className="text-left px-4 py-3 text-gray-700 font-semibold">Slug</th>
                 <th className="text-left px-4 py-3 text-gray-700 font-semibold">Imagen</th>
                 <th className="w-28 px-4 py-3 text-gray-700 font-semibold">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {list.map((c) => (
+              {filteredList.map((c) => (
                 <tr key={c.id} className="border-t border-gray-100">
                   <td className="px-4 py-3 text-gray-900">{c.name}</td>
+                  <td className="px-4 py-3 text-gray-600 font-bold">{c.codLinea ?? '—'}</td>
                   <td className="px-4 py-3 text-gray-600 font-mono text-sm">{c.slug}</td>
                   <td className="px-4 py-3">
                     {categoryImageUrl(c) ? (
@@ -150,7 +180,9 @@ export default function AdminCategorias() {
                         className="w-12 h-12 object-cover rounded"
                       />
                     ) : (
-                      <span className="text-gray-400 text-sm">—</span>
+                      <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center text-gray-400">
+                        <FolderOpen size={20} />
+                      </div>
                     )}
                   </td>
                   <td className="px-4 py-3 flex gap-2">
@@ -190,8 +222,24 @@ export default function AdminCategorias() {
               ))}
             </tbody>
           </table>
-          {list.length === 0 && (
-            <p className="text-center py-12 text-gray-500">No hay categorías. Creá una para empezar.</p>
+          {filteredList.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 px-4">
+              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 mb-4">
+                <Search size={32} />
+              </div>
+              <p className="text-gray-500 font-medium">No se encontraron categorías</p>
+              <p className="text-gray-400 text-sm mt-1">
+                {searchTerm ? `No hay resultados para "${searchTerm}"` : 'Creá una categoría para empezar.'}
+              </p>
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="mt-4 text-primary font-semibold hover:underline"
+                >
+                  Limpiar búsqueda
+                </button>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -235,6 +283,16 @@ export default function AdminCategorias() {
                   onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary font-mono text-sm"
                   required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Código de Línea (Excel)</label>
+                <input
+                  type="number"
+                  value={form.codLinea ?? ''}
+                  onChange={(e) => setForm((f) => ({ ...f, codLinea: parseInt(e.target.value, 10) || undefined }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary"
+                  placeholder="Ej: 101"
                 />
               </div>
               <div>

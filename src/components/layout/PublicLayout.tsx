@@ -8,7 +8,7 @@ export default function PublicLayout() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       <Header />
       <AnimatePresence mode="wait">
         <motion.div
