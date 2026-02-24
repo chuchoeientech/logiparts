@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,17 +36,6 @@ export default function Header() {
               <Link to="/contacto" className="text-gray-800 hover:text-primary font-medium transition-colors">
                 Contacto
               </Link>
-            </div>
-
-            <div className="hidden md:flex items-center gap-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Buscar productos..."
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary w-64"
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              </div>
             </div>
 
             <button
@@ -88,14 +77,6 @@ export default function Header() {
                 >
                   Contacto
                 </Link>
-                <div className="relative mt-2">
-                  <input
-                    type="text"
-                    placeholder="Buscar productos..."
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary w-full"
-                  />
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                </div>
               </div>
             </div>
           )}

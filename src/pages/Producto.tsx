@@ -94,10 +94,10 @@ function Producto() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="bg-light-gray"
+      className="bg-[#F8FAFC]"
       style={{ marginTop: '80px', minHeight: 'calc(100vh - 80px)' }}
     >
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 md:py-12">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -106,120 +106,139 @@ function Producto() {
         >
           <Link
             to="/productos"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary font-medium transition-colors"
+            className="inline-flex items-center gap-2 text-slate-500 hover:text-primary font-medium transition-all group"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
             Volver a productos
           </Link>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 max-w-7xl mx-auto">
+          {/* Image Section */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.15, duration: 0.4 }}
-            className="bg-white rounded-xl shadow-lg overflow-hidden"
+            className="relative group"
           >
-            <div className="aspect-square bg-gray-100 flex items-center justify-center">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden aspect-square sticky top-28">
               {imageUrl ? (
                 <img
                   src={imageUrl}
                   alt={product.descripcion || product.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
-                <div className="flex flex-col items-center justify-center text-gray-400">
-                  <Package size={120} strokeWidth={1} />
-                  <span className="text-sm uppercase tracking-widest mt-4 font-bold opacity-50">Sin imágen</span>
+                <div className="flex flex-col items-center justify-center h-full bg-slate-50 text-slate-300">
+                  <Package size={80} strokeWidth={1} />
+                  <span className="text-xs uppercase tracking-[0.2em] mt-4 font-bold opacity-60">Sin imágen</span>
                 </div>
               )}
             </div>
           </motion.div>
 
+          {/* Info Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.4 }}
-            className="flex flex-col"
+            className="flex flex-col lg:py-4"
           >
-            {category && (
-              <Link
-                to={`/productos?categoria=${category.slug}`}
-                className="text-primary font-semibold text-sm mb-2 hover:underline w-fit"
-              >
-                {category.name}
-              </Link>
-            )}
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {product.descripcion || product.name}
-            </h1>
-            <div className="flex items-baseline gap-2 mb-6">
-              <span className="text-4xl font-bold text-primary">
-                {formatPrice(Number(product.costoFinal || product.price || 0))}
-              </span>
-              <span className="text-primary font-bold">Gs</span>
-            </div>
+            <div className="flex flex-col gap-4 mb-8">
+              {category && (
+                <Link
+                  to={`/productos?categoria=${category.slug}`}
+                  className="bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider px-3 py-1 rounded-full hover:bg-primary/20 transition-colors w-fit"
+                >
+                  {category.name}
+                </Link>
+              )}
 
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className="bg-gray-100 p-3 rounded-lg flex items-center gap-3">
-                <Package className="text-primary" size={20} />
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-bold">Stock</p>
-                  <p className="text-gray-900 font-semibold">{product.cantDisponible} unidades</p>
-                </div>
-              </div>
-              <div className="bg-gray-100 p-3 rounded-lg flex items-center gap-3">
-                <Shield className="text-primary" size={20} />
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-bold">Código</p>
-                  <p className="text-gray-900 font-semibold">{product.codigoImportacion || 'N/A'}</p>
+              <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 leading-[1.15]">
+                {product.descripcion || product.name}
+              </h1>
+
+              <div className="flex items-center gap-3">
+                <div className="text-4xl md:text-5xl font-black text-primary tracking-tight">
+                  {formatPrice(Number(product.costoFinal || product.price || 0))}
+                  <span className="text-xl md:text-2xl ml-1 font-bold">Gs</span>
                 </div>
               </div>
             </div>
-            {product.description && (
-              <div className="text-gray-700 leading-relaxed mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <Settings size={20} /> Descripción
-                </h3>
-                <p className="whitespace-pre-wrap">{product.description}</p>
-              </div>
-            )}
 
-            {product.vehicles && product.vehicles.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Car size={20} /> Vehículos Compatibles
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {product.vehicles.map((v) => (
-                    <span
-                      key={v.id}
-                      className="px-3 py-1 bg-white border border-gray-200 rounded-full text-sm text-gray-700"
-                    >
-                      {v.nombreMarca} {v.nombreModelo} ({v.anio})
-                    </span>
-                  ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+              <div className="bg-white border border-slate-200 p-4 rounded-xl flex items-center gap-4 shadow-sm">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                  <Package size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest leading-none mb-1">Stock</p>
+                  <p className="text-slate-900 font-bold text-lg leading-none">{product.cantDisponible} <span className="text-sm font-medium text-slate-500">Unidades</span></p>
                 </div>
               </div>
-            )}
+              <div className="bg-white border border-slate-200 p-4 rounded-xl flex items-center gap-4 shadow-sm">
+                <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500">
+                  <Shield size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest leading-none mb-1">Código</p>
+                  <p className="text-slate-900 font-bold text-lg leading-none">{product.codigoImportacion || 'N/A'}</p>
+                </div>
+              </div>
+            </div>
 
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleConsultar}
-              className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold px-8 py-4 rounded-lg text-lg transition-colors flex items-center justify-center gap-3 shadow-lg"
-            >
-              <MessageCircle size={24} />
-              Consultar por WhatsApp
-            </motion.button>
+            <div className="space-y-10">
+              {product.description && (
+                <div className="relative pt-6">
+                  <div className="absolute top-0 left-0 w-12 h-1 bg-primary/20 rounded-full" />
+                  <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                    <Settings size={20} className="text-slate-400" /> Descripción
+                  </h3>
+                  <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">
+                    {product.description}
+                  </p>
+                </div>
+              )}
 
-            <p className="text-gray-500 text-sm mt-4 text-center">
-              Respondemos a la brevedad con disponibilidad y detalles de entrega.
-            </p>
+              {product.vehicles && product.vehicles.length > 0 && (
+                <div className="relative pt-6">
+                  <div className="absolute top-0 left-0 w-12 h-1 bg-primary/20 rounded-full" />
+                  <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <Car size={20} className="text-slate-400" /> Vehículos Compatibles
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {product.vehicles.map((v) => (
+                      <span
+                        key={v.id}
+                        className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 shadow-sm hover:border-primary/50 transition-colors"
+                      >
+                        {v.nombreMarca} {v.nombreModelo} <span className="text-slate-400 font-medium">{v.anio}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-6">
+                <motion.button
+                  whileHover={{ scale: 1.01, translateY: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleConsultar}
+                  className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white font-extrabold px-8 py-5 rounded-2xl text-lg transition-all flex items-center justify-center gap-4 shadow-xl shadow-green-500/20"
+                >
+                  <MessageCircle size={24} />
+                  Consultar Disponibilidad
+                </motion.button>
+                <p className="text-slate-400 text-sm mt-4 text-center font-medium">
+                  Respondemos de inmediato por <span className="text-green-600 font-bold">WhatsApp</span>
+                </p>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
     </motion.div>
+
   );
 }
 
