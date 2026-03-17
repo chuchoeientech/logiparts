@@ -36,7 +36,7 @@ async function request<T>(
   if (!res.ok) {
     throw new Error(text || `Error ${res.status}`);
   }
-  if (res.status === 204) return undefined as T;
+  if (res.status === 204 || text.trim() === '') return undefined as T;
   try {
     return JSON.parse(text) as T;
   } catch {

@@ -335,10 +335,7 @@ export default function Productos() {
   );
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
+    <div
       className="bg-[#F8FAFC] overflow-x-hidden"
       style={{ marginTop: '80px', minHeight: 'calc(100vh - 80px)' }}
     >
@@ -527,6 +524,6 @@ export default function Productos() {
           </>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }

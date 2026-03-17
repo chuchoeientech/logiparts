@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import PublicLayout from './components/layout/PublicLayout';
 import Home from './pages/Home';
@@ -13,9 +14,18 @@ import AdminProductos from './pages/admin/AdminProductos';
 import AdminVehiculos from './pages/admin/AdminVehiculos';
 import AdminBulkUpload from './pages/admin/AdminBulkUpload';
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <AdminAuthProvider>
         <Routes>
           <Route path="/admin/login" element={<AdminLogin />} />
