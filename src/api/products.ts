@@ -5,21 +5,9 @@ export type ProductApi = Product;
 
 export interface CreateProductBody {
   descripcion?: string;
-  description?: string;
   costoFinal: number;
-  costoEstimado?: number;
-  costoReparacion?: number;
   cantDisponible?: number;
-  cantMaxima?: number;
-  cantMinima?: number;
-  cantPend?: number;
-  codDeposito?: number;
-  nombreDeposito?: string;
   codigoBarra?: string;
-  codigoImportacion?: string;
-  codMarca?: number;
-  codOrigen?: number;
-  estadoRepuesto?: number;
   categoryId?: string | null;
   vehicleIds?: string[];
   isFeatured?: boolean;
@@ -27,7 +15,6 @@ export interface CreateProductBody {
 
 export interface UpdateProductBody extends Partial<CreateProductBody> { }
 
-/** Devuelve la URL completa para mostrar la imagen de un producto */
 export function productImageUrl(p: ProductApi): string | null {
   return getUploadsUrl(p.image);
 }

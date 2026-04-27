@@ -11,34 +11,18 @@ export interface Category {
 export interface Vehicle {
   id: string;
   anio: number;
-  nombreTipo: string;
   nombreMarca: string;
   nombreModelo: string;
-  codTipo: number | null;
-  codModelo: number | null;
-  codOrigen: number | null;
 }
 
 export interface Product {
   id: string;
-  name: string; // alias para descripcion
+  name: string;        // alias para descripcion
   descripcion: string | null;
-  description: string | null;
-  price: number; // alias para costoFinal
+  price: number;       // alias para costoFinal
   costoFinal: number;
-  costoEstimado: number;
-  costoReparacion: number;
   cantDisponible: number;
-  cantMaxima: number;
-  cantMinima: number;
-  cantPend: number;
-  codDeposito: number | null;
-  nombreDeposito: string | null;
   codigoBarra: string | null;
-  codigoImportacion: string | null;
-  codMarca: number | null;
-  codOrigen: number | null;
-  estadoRepuesto: number | null;
   image: string | null;
   image_url: string | null; // alias para image
   isFeatured: boolean;

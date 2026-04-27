@@ -38,12 +38,9 @@ export default function AdminBulkUpload() {
                     <p className="text-gray-600">Actualiza o crea productos masivamente usando un archivo de Excel o CSV.</p>
                 </div>
                 <a
-                    href="#"
+                    href="#formato"
                     className="flex items-center gap-2 text-primary hover:underline font-semibold text-sm"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        alert('Columnas requeridas:\n- descripcion\n- codigo_importacion\n- costo_final\n- cant_disponible\n- cod_linea\n- nombre_marca\n- nombre_modelo\n- anio\n\nEl sistema usará estas columnas para identificar y actualizar los productos, categorías y vehículos automáticamente.');
-                    }}
+                    onClick={(e) => { e.preventDefault(); document.getElementById('formato')?.scrollIntoView({ behavior: 'smooth' }); }}
                 >
                     <Download size={18} />
                     Ver Formato Requerido
@@ -159,16 +156,61 @@ export default function AdminBulkUpload() {
                 )}
             </div>
 
-            <div className="mt-8 bg-blue-50 border border-blue-100 rounded-2xl p-6">
-                <h3 className="text-blue-900 font-bold mb-2 flex items-center gap-2">
-                    💡 Recordatorio
-                </h3>
-                <ul className="text-blue-800 text-sm space-y-2 list-disc list-inside">
-                    <li>El sistema busca productos existentes por <strong>Código de Importación</strong> o <strong>Descripción</strong>.</li>
-                    <li>Si el producto existe, se actualizan sus precios y stock. Si no, se crea uno nuevo.</li>
-                    <li>Las categorías se identifican por el <strong>Cód. Línea</strong>. Si no existen, se crean.</li>
-                    <li>Los vehículos se identifican por Marca, Modelo y Año. Si no existen, se crean.</li>
-                </ul>
+            <div id="formato" className="mt-8 space-y-4">
+                {/* Formato de columnas */}
+                <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <h3 className="text-gray-900 font-bold mb-4 flex items-center gap-2">
+                        <FileText size={18} className="text-primary" />
+                        Formato requerido del Excel
+                    </h3>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead>
+                                <tr className="bg-gray-50 border-b border-gray-200">
+                                    <th className="text-left px-4 py-2 font-bold text-gray-700">Columna</th>
+                                    <th className="text-left px-4 py-2 font-bold text-gray-700">Requerida</th>
+                                    <th className="text-left px-4 py-2 font-bold text-gray-700">Descripción</th>
+                                    <th className="text-left px-4 py-2 font-bold text-gray-700">Ejemplo</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {[
+                                    { col: 'DESCRIPCIÓN', req: true, desc: 'Nombre del repuesto', ej: 'FARO DEL RH TY HILUX 08-11 FP 08/19' },
+                                    { col: 'PRECIO', req: true, desc: 'Precio de venta en Gs', ej: '420000' },
+                                    { col: 'STOCK', req: true, desc: 'Cantidad disponible', ej: '3' },
+                                    { col: 'CODIGO DE BARRA', req: false, desc: 'Código de barras del producto', ej: '17306176201096' },
+                                    { col: 'MARCA', req: false, desc: 'Marca del vehículo compatible', ej: 'TOYOTA' },
+                                    { col: 'MODELO', req: false, desc: 'Modelo del vehículo compatible', ej: 'HILUX' },
+                                ].map(({ col, req, desc, ej }) => (
+                                    <tr key={col} className="hover:bg-gray-50">
+                                        <td className="px-4 py-3 font-mono font-bold text-gray-900">{col}</td>
+                                        <td className="px-4 py-3">
+                                            {req
+                                                ? <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">Sí</span>
+                                                : <span className="bg-gray-100 text-gray-500 text-xs font-bold px-2 py-0.5 rounded-full">No</span>
+                                            }
+                                        </td>
+                                        <td className="px-4 py-3 text-gray-600">{desc}</td>
+                                        <td className="px-4 py-3 font-mono text-gray-500 text-xs">{ej}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* Reglas de actualización */}
+                <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6">
+                    <h3 className="text-blue-900 font-bold mb-2 flex items-center gap-2">
+                        💡 Reglas de actualización
+                    </h3>
+                    <ul className="text-blue-800 text-sm space-y-2 list-disc list-inside">
+                        <li>Si ya existe un producto con el mismo <strong>Código de Barra</strong>, se actualiza.</li>
+                        <li>Si no hay código de barra pero coincide la <strong>Descripción</strong>, también se actualiza.</li>
+                        <li>Si no existe ninguna coincidencia, se crea un producto nuevo.</li>
+                        <li>Los vehículos (Marca + Modelo) se crean automáticamente si no existen.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     );

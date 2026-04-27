@@ -9,9 +9,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-PY').format(price);
-  };
+  const formatPrice = (price: number) => new Intl.NumberFormat('es-PY').format(price);
 
   const handleConsultar = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -20,6 +18,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
     const whatsappUrl = `https://wa.me/595981234567?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
+
+  const firstVehicle = product.vehicles?.[0];
 
   return (
     <motion.div
@@ -33,7 +33,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           whileHover={{ y: -6, transition: { duration: 0.2 } }}
           className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 overflow-hidden h-full flex flex-col"
         >
-          {/* Image Container with Fixed Aspect Ratio */}
+          {/* Image */}
           <div className="relative aspect-square overflow-hidden bg-slate-50 flex items-center justify-center border-b border-slate-100">
             {product.image_url ? (
               <motion.img
@@ -47,22 +47,39 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
                 <span className="text-[10px] uppercase tracking-[0.2em] mt-3 font-bold opacity-60">Sin imágen</span>
               </div>
             )}
-
-            {/* Hover Overlay */}
             <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
 
-          <div className="p-6 flex-1 flex flex-col">
-            <div className="mb-4 flex-1">
-              <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1 group-hover:text-primary transition-colors">
-                {product.name}
-              </h3>
-              <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed">
-                {product.description || 'Consulta disponibilidad y más detalles técnicos con nosotros.'}
-              </p>
+          <div className="p-5 flex-1 flex flex-col gap-3">
+            {/* Título */}
+            <h3 className="text-base font-bold text-slate-900 line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+              {product.name}
+            </h3>
+
+            {/* Marca / Modelo */}
+            {firstVehicle && (
+              <div className="flex gap-2 flex-wrap">
+                <span className="text-xs bg-slate-100 text-slate-600 font-semibold px-2 py-1 rounded-lg">
+                  {firstVehicle.nombreMarca}
+                </span>
+                <span className="text-xs bg-slate-100 text-slate-600 font-semibold px-2 py-1 rounded-lg">
+                  {firstVehicle.nombreModelo}
+                </span>
+              </div>
+            )}
+
+            {/* Stock / Código de barras */}
+            <div className="flex flex-col gap-1 text-xs text-slate-500">
+              {product.cantDisponible != null && (
+                <span>Stock: <span className="font-semibold text-slate-700">{product.cantDisponible} uds.</span></span>
+              )}
+              {product.codigoBarra && (
+                <span>Cód. barras: <span className="font-semibold text-slate-700">{product.codigoBarra}</span></span>
+              )}
             </div>
 
-            <div className="flex flex-col gap-4 mt-auto">
+            <div className="flex flex-col gap-3 mt-auto pt-1">
+              {/* Precio */}
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-black text-primary tracking-tight">
                   {formatPrice(product.price)}
