@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { categoriesApi, categoryImageUrl, type CategoryApi } from '../api/categories';
 import { productsApi, productImageUrl, type ProductApi } from '../api/products';
 import { Product } from '../types';
 import ProductCard from '../components/ProductCard';
-import CategoryCard from '../components/CategoryCard';
 
 const fadeInUp = { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.5 } };
 const stagger = { animate: { transition: { staggerChildren: 0.08 } } };
@@ -23,8 +21,8 @@ function mapProduct(p: ProductApi): Product {
 }
 
 export default function Home() {
-  const [categories, setCategories] = useState<CategoryApi[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [recentProducts, setRecentProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,14 +32,12 @@ export default function Home() {
       setLoading(true);
       setError(null);
       try {
-        const [categoriesRes, productsRes] = await Promise.all([
-          categoriesApi.getAll(),
-          productsApi.getAll({ featured: true }),
-        ]);
-        if (!cancelled) {
-          setCategories(categoriesRes);
-          setFeaturedProducts(productsRes.map(mapProduct).slice(0, 6));
-        }
+        const productsRes = await productsApi.getAll();
+          if (!cancelled) {
+            const all = productsRes.map(mapProduct);
+            setFeaturedProducts(all.filter(p => p.isFeatured).slice(0, 6));
+            setRecentProducts(all.filter(p => !p.isFeatured).slice(0, 6));
+          }
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : 'Error al cargar');
@@ -166,31 +162,41 @@ export default function Home() {
       >
         <div className="container mx-auto px-4">
           <motion.div className="text-center mb-12" variants={fadeInUp}>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Nuestras Categorías</h2>
-            <p className="text-gray-600 text-lg">Encuentra el repuesto que necesitas</p>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Nuestros Productos</h2>
+            <p className="text-gray-600 text-lg">Encontrá el repuesto que necesitas</p>
           </motion.div>
-
+    
           {loading && (
-            <div className="text-center py-12 text-gray-500">Cargando categorías...</div>
+            <div className="text-center py-12 text-gray-500">Cargando productos...</div>
           )}
           {error && (
             <div className="text-center py-12 text-red-600">{error}</div>
           )}
           {!loading && !error && (
-            <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-8" variants={stagger}>
-              {categories.map((category) => (
-                <motion.div key={category.id} variants={fadeInUp}>
-                  <CategoryCard
-                    name={category.name}
-                    slug={category.slug}
-                    imageUrl={categoryImageUrl(category)}
-                  />
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-          {!loading && !error && categories.length === 0 && (
-            <div className="text-center py-12 text-gray-600">No hay categorías cargadas.</div>
+            <>
+              <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" variants={stagger}>
+                {recentProducts.map((product, index) => (
+                  <motion.div key={product.id} variants={fadeInUp}>
+                    <ProductCard product={product} index={index} />
+                  </motion.div>
+                ))}
+              </motion.div>
+    
+              {recentProducts.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-gray-600 text-lg">No hay productos disponibles en este momento.</p>
+                </div>
+              )}
+    
+              <motion.div className="text-center mt-12" variants={fadeInUp}>
+                <Link
+                  to="/productos"
+                  className="inline-block bg-[#111111] hover:bg-primary text-white hover:text-black font-bold px-8 py-4 rounded-lg text-lg transition-all duration-300"
+                >
+                  Ver Más Productos
+                </Link>
+              </motion.div>
+            </>
           )}
         </div>
       </motion.section>

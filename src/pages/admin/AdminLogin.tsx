@@ -28,7 +28,7 @@ export default function AdminLogin() {
           </div>
         </div>
         <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">
-          Admin Logiparts
+          Admin Logisparts
         </h1>
         <p className="text-gray-500 text-center text-sm mb-6">
           Ingresá la contraseña para gestionar productos y categorías
