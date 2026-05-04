@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+
+const menuLinks = [
+  { to: '/', label: 'Inicio' },
+  { to: '/productos', label: 'Productos' },
+  { to: '/nosotros', label: 'Nosotros' },
+  { to: '/contacto', label: 'Contacto' },
+];
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,13 +21,13 @@ export default function Header() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
             <Link to="/" className="flex items-center">
-              <motion.span
+              <motion.img
+                src="/logo.jpg"
+                alt="Logisparts - Compañía de Servicios Integrados S.A."
                 initial={{ opacity: 0.8 }}
                 animate={{ opacity: 1 }}
-                className="text-3xl font-bold text-primary"
-              >
-                LOGISPARTS
-              </motion.span>
+                className="h-14 w-auto object-contain"
+              />
             </Link>
 
             <div className="hidden md:flex items-center gap-8">
@@ -38,48 +45,57 @@ export default function Header() {
               </Link>
             </div>
 
-            <button
-              className="md:hidden text-gray-800"
+            <motion.button
+              className="md:hidden text-gray-800 p-1"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              whileTap={{ scale: 0.85 }}
             >
-              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={isMenuOpen ? 'close' : 'open'}
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  style={{ display: 'block' }}
+                >
+                  {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                </motion.span>
+              </AnimatePresence>
+            </motion.button>
           </div>
 
-          {isMenuOpen && (
-            <div className="md:hidden py-4 border-t">
-              <div className="flex flex-col gap-4">
-                <Link
-                  to="/"
-                  className="text-gray-800 hover:text-primary font-medium transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Inicio
-                </Link>
-                <Link
-                  to="/productos"
-                  className="text-gray-800 hover:text-primary font-medium transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Productos
-                </Link>
-                <Link
-                  to="/nosotros"
-                  className="text-gray-800 hover:text-primary font-medium transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Nosotros
-                </Link>
-                <Link
-                  to="/contacto"
-                  className="text-gray-800 hover:text-primary font-medium transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Contacto
-                </Link>
-              </div>
-            </div>
-          )}
+          <AnimatePresence initial={false}>
+            {isMenuOpen && (
+              <motion.div
+                key="mobile-menu"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: 'easeInOut' }}
+                className="md:hidden overflow-hidden border-t"
+              >
+                <div className="flex flex-col py-4 gap-1">
+                  {menuLinks.map((link, i) => (
+                    <motion.div
+                      key={link.to}
+                      initial={{ x: -16, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: i * 0.06, duration: 0.2 }}
+                    >
+                      <Link
+                        to={link.to}
+                        className="block px-2 py-2 text-gray-800 hover:text-primary font-medium transition-colors"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {link.label}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </nav>
     </header>

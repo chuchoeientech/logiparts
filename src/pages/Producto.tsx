@@ -33,8 +33,31 @@ function Producto() {
 
   const handleConsultar = () => {
     if (!product) return;
-    const message = `Hola, estoy interesado en este producto: ${product.descripcion || product.name}`;
-    const whatsappUrl = `https://wa.me/595981234567?text=${encodeURIComponent(message)}`;
+
+    const lines: string[] = [
+      `Hola! Estoy interesado en el siguiente repuesto:`,
+      ``,
+      `📦 *Producto:* ${product.descripcion || product.name}`,
+      `💰 *Precio:* Gs. ${formatPrice(Number(product.costoFinal || product.price || 0))}`,
+      `📊 *Stock disponible:* ${product.cantDisponible != null ? `${product.cantDisponible} uds.` : 'N/A'}`,
+    ];
+
+    if (product.codigoBarra) {
+      lines.push(`🔢 *Código de barras:* ${product.codigoBarra}`);
+    }
+    if (product.category?.name) {
+      lines.push(`🏷️ *Categoría:* ${product.category.name}`);
+    }
+    if (product.vehicles && product.vehicles.length > 0) {
+      const vehicleList = product.vehicles
+        .map(v => `${v.nombreMarca} ${v.nombreModelo}${v.anio ? ` (${v.anio})` : ''}`)
+        .join(', ');
+      lines.push(`🚗 *Vehículos compatibles:* ${vehicleList}`);
+    }
+
+    lines.push(``, `¿Está disponible para la venta?`);
+
+    const whatsappUrl = `https://wa.me/595981234567?text=${encodeURIComponent(lines.join('\n'))}`;
     window.open(whatsappUrl, '_blank');
   };
 

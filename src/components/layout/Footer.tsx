@@ -7,7 +7,11 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-2xl font-bold text-primary mb-4">LOGISPARTS</h3>
+            <img
+              src="/logo.jpg"
+              alt="Logisparts - Compañía de Servicios Integrados S.A."
+              className="h-16 w-auto object-contain mb-4"
+            />
             <p className="text-gray-400 mb-4">
               Repuestos originales y alternativos para tu vehículo. Calidad, confianza y los mejores precios del mercado.
             </p>

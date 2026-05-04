@@ -103,9 +103,13 @@ export default function Productos() {
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
+      const q = searchQuery.toLowerCase();
       const matchSearch = !searchQuery ||
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.codigoImportacion?.toLowerCase().includes(searchQuery.toLowerCase());
+        p.name.toLowerCase().includes(q) ||
+        (p.codigoBarra?.toLowerCase().includes(q) ?? false) ||
+        (p.vehicles?.some(
+          v => v.nombreMarca.toLowerCase().includes(q) || v.nombreModelo.toLowerCase().includes(q)
+        ) ?? false);
 
       const matchCategory = selectedCategoryId === 'all' || p.categoryId === selectedCategoryId;
       const matchVehicle = selectedVehicleId === 'all' || p.vehicles?.some(v => v.id === selectedVehicleId);
@@ -136,7 +140,7 @@ export default function Productos() {
         <div className="relative">
           <input
             type="text"
-            placeholder="Nombre o código..."
+            placeholder="Nombre, código, marca o modelo..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary/50"
@@ -357,7 +361,7 @@ export default function Productos() {
               <div className="flex-1 relative">
                 <input
                   type="text"
-                  placeholder="¿Qué repuesto estás buscando? (Nombre, código...)"
+                  placeholder="Nombre, código, marca o modelo..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-transparent pl-12 pr-4 py-3 text-white placeholder-slate-400 font-bold outline-none"
