@@ -81,6 +81,16 @@ export default function Productos() {
     if (categoryIdFromSlug) setSelectedCategoryId(categoryIdFromSlug);
   }, [categoryIdFromSlug]);
 
+  const vehicleProductCount = useMemo(() => {
+    const counts: Record<string, number> = {};
+    products.forEach((p) => {
+      p.vehicles?.forEach((v) => {
+        counts[v.id] = (counts[v.id] || 0) + 1;
+      });
+    });
+    return counts;
+  }, [products]);
+
   const priceStats = useMemo(() => {
     if (products.length === 0) return { min: 0, max: 0, bins: [], maxDensity: 0 };
     const prices = products.map(p => p.price);
@@ -192,7 +202,7 @@ export default function Productos() {
             <option value="all">Todos los vehículos</option>
             {vehicles.map((v) => (
               <option key={v.id} value={v.id}>
-                {v.nombreMarca} {v.nombreModelo} ({v.anio})
+                {v.nombreMarca} {v.nombreModelo} ({vehicleProductCount[v.id] ?? 0})
               </option>
             ))}
           </select>
@@ -294,13 +304,16 @@ export default function Productos() {
 
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">$</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">₲</span>
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="Min"
               value={minPrice}
               onChange={(e) => {
-                setMinPrice(e.target.value);
+                const val = e.target.value.replace(/[^0-9]/g, '');
+                setMinPrice(val);
                 setCurrentPage(1);
               }}
               className="w-full pl-7 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
@@ -308,13 +321,16 @@ export default function Productos() {
           </div>
           <span className="text-slate-300">-</span>
           <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">$</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">₲</span>
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="Max"
               value={maxPrice}
               onChange={(e) => {
-                setMaxPrice(e.target.value);
+                const val = e.target.value.replace(/[^0-9]/g, '');
+                setMaxPrice(val);
                 setCurrentPage(1);
               }}
               className="w-full pl-7 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary/50 transition-all"

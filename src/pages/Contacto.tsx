@@ -31,8 +31,11 @@ export default function Contacto() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Gracias por tu mensaje. Nos pondremos en contacto contigo pronto.');
+    const subject = encodeURIComponent(`Consulta de ${formData.nombre}`);
+    const body = encodeURIComponent(
+      `Nombre: ${formData.nombre}\nTeléfono: ${formData.telefono}\nEmail: ${formData.email}\n\nMensaje:\n${formData.mensaje}`
+    );
+    window.location.href = `mailto:ventas3@logisparts.com.py?subject=${subject}&body=${body}`;
     setFormData({ nombre: '', telefono: '', email: '', mensaje: '' });
   };
 
@@ -45,12 +48,18 @@ export default function Contacto() {
   const contactInfo = [
     {
       icon: MapPin,
-      title: 'Dirección',
+      title: 'Direcciones',
       content: (
-        <p className="text-gray-500 leading-relaxed">
-          Av. Eusebio Ayala 1234<br />
-          Asunción, Paraguay
-        </p>
+        <div className="space-y-2 text-gray-500 leading-relaxed text-sm">
+          <div>
+            <p className="font-semibold text-gray-700">Casa Central</p>
+            <p>Avda. Eusebio Ayala 1715 casi Kubitschek. Asunción</p>
+          </div>
+          <div>
+            <p className="font-semibold text-gray-700">Suc. Bruno Guggiari</p>
+            <p>Juan Maria Vianney 1748 casi Avda. Bruno Guggiari. Lambaré</p>
+          </div>
+        </div>
       ),
     },
     {
@@ -58,11 +67,11 @@ export default function Contacto() {
       title: 'Teléfonos',
       content: (
         <div className="space-y-1">
-          <a href="tel:+595211234567" className="block text-gray-500 hover:text-primary transition-colors">
-            +595 21 123 4567
+          <a href="tel:+5950974420367" className="block text-gray-500 hover:text-primary transition-colors">
+            0974-420367
           </a>
-          <a href="tel:+595981234567" className="block text-gray-500 hover:text-primary transition-colors">
-            +595 981 234 567
+          <a href="tel:+5950974543211" className="block text-gray-500 hover:text-primary transition-colors">
+            0974-543211
           </a>
         </div>
       ),
@@ -72,11 +81,14 @@ export default function Contacto() {
       title: 'Email',
       content: (
         <div className="space-y-1">
-          <a href="mailto:info@logisparts.com" className="block text-gray-500 hover:text-primary transition-colors">
-            info@logisparts.com
+          <a href="mailto:ventas@logisparts.com.py" className="block text-gray-500 hover:text-primary transition-colors text-sm">
+            ventas@logisparts.com.py
           </a>
-          <a href="mailto:ventas@logisparts.com" className="block text-gray-500 hover:text-primary transition-colors">
-            ventas@logisparts.com
+          <a href="mailto:ventas2@logisparts.com.py" className="block text-gray-500 hover:text-primary transition-colors text-sm">
+            ventas2@logisparts.com.py
+          </a>
+          <a href="mailto:ventas3@logisparts.com.py" className="block text-gray-500 hover:text-primary transition-colors text-sm">
+            ventas3@logisparts.com.py
           </a>
         </div>
       ),
@@ -86,8 +98,8 @@ export default function Contacto() {
       title: 'Horario de Atención',
       content: (
         <div className="space-y-1 text-gray-500">
-          <p>Lunes a Viernes: <span className="text-gray-800 font-medium">8:00 – 18:00</span></p>
-          <p>Sábados: <span className="text-gray-800 font-medium">8:00 – 13:00</span></p>
+          <p>Lunes a Viernes: <span className="text-gray-800 font-medium">08:30 – 17:30</span></p>
+          <p>Sábados: <span className="text-gray-800 font-medium">08:30 – 12:00</span></p>
           <p>Domingos: <span className="text-gray-400">Cerrado</span></p>
         </div>
       ),
@@ -305,19 +317,79 @@ export default function Contacto() {
         </div>
       </section>
 
-      {/* Map full-width */}
-      <div className="relative h-80 overflow-hidden border-t-4 border-primary">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d115106.13533398158!2d-57.64038084650878!3d-25.30353793886241!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x945da5e05cb6e4f9%3A0x3bfe00c455da3fce!2sAsunci%C3%B3n%2C%20Paraguay!5e0!3m2!1ses!2sus!4v1677123456789!5m2!1ses!2sus"
-          width="100%"
-          height="100%"
-          style={{ border: 0, filter: 'grayscale(30%)' }}
-          allowFullScreen
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          title="Ubicación de Logisparts"
-        />
-      </div>
+      {/* Maps — 2 location cards */}
+      <section className="py-16 bg-[#111111] border-t-4 border-primary">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="mb-10 text-center">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <div className="w-8 h-1 bg-primary rounded-full" />
+              <span className="text-primary text-xs font-bold uppercase tracking-widest">Nuestros Locales</span>
+              <div className="w-8 h-1 bg-primary rounded-full" />
+            </div>
+            <h2 className="text-3xl font-extrabold text-white">¿Dónde Encontrarnos?</h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Card 1 */}
+            <motion.div
+              {...fadeInUp}
+              className="bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-xl ring-1 ring-white/10 hover:ring-primary/50 transition-all duration-300"
+            >
+              <div className="px-6 py-4 flex items-start gap-3 border-b border-white/10">
+                <div className="flex-shrink-0 w-10 h-10 bg-primary/10 border border-primary/30 rounded-xl flex items-center justify-center mt-0.5">
+                  <MapPin size={20} className="text-primary" />
+                </div>
+                <div>
+                  <p className="text-primary text-xs font-bold uppercase tracking-widest mb-0.5">Casa Central</p>
+                  <p className="text-white font-semibold leading-snug">Avda. Eusebio Ayala 1715 casi Kubitschek</p>
+                  <p className="text-gray-400 text-sm">Asunción, Paraguay</p>
+                </div>
+              </div>
+              <div className="h-64 overflow-hidden">
+                <iframe
+                  src="https://maps.google.com/maps?q=Avda.+Eusebio+Ayala+1715+Asunci%C3%B3n+Paraguay&output=embed&z=16"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, filter: 'grayscale(15%)' }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Casa Central Logisparts"
+                />
+              </div>
+            </motion.div>
+
+            {/* Card 2 */}
+            <motion.div
+              {...fadeInUp}
+              className="bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-xl ring-1 ring-white/10 hover:ring-primary/50 transition-all duration-300"
+            >
+              <div className="px-6 py-4 flex items-start gap-3 border-b border-white/10">
+                <div className="flex-shrink-0 w-10 h-10 bg-primary/10 border border-primary/30 rounded-xl flex items-center justify-center mt-0.5">
+                  <MapPin size={20} className="text-primary" />
+                </div>
+                <div>
+                  <p className="text-primary text-xs font-bold uppercase tracking-widest mb-0.5">Suc. Bruno Guggiari</p>
+                  <p className="text-white font-semibold leading-snug">Juan Maria Vianney 1748 casi Avda. Bruno Guggiari</p>
+                  <p className="text-gray-400 text-sm">Lambaré, Paraguay</p>
+                </div>
+              </div>
+              <div className="h-64 overflow-hidden">
+                <iframe
+                  src="https://maps.google.com/maps?q=Juan+Maria+Vianney+1748+Lambar%C3%A9+Paraguay&output=embed&z=16"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, filter: 'grayscale(15%)' }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Sucursal Bruno Guggiari Logisparts"
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
     </motion.div>
   );
 }

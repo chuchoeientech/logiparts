@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Product } from '../types';
-import { Package, ChevronRight } from 'lucide-react';
+import { Package, ShoppingCart } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
 
 interface ProductCardProps {
   product: Product;
@@ -10,13 +11,12 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const formatPrice = (price: number) => new Intl.NumberFormat('es-PY').format(price);
+  const { addItem } = useCart();
 
-  const handleConsultar = (e: React.MouseEvent) => {
+  const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const message = `Hola, estoy interesado en este producto: ${product.name}`;
-    const whatsappUrl = `https://wa.me/595981234567?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    addItem(product);
   };
 
   const firstVehicle = product.vehicles?.[0];
@@ -88,16 +88,11 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               </div>
 
               <button
-                onClick={handleConsultar}
-                className="w-full bg-slate-900 hover:bg-primary hover:text-black text-white font-bold py-3 rounded-xl transition-all duration-300 text-sm flex items-center justify-center gap-2 group/btn"
+                onClick={handleAddToCart}
+                className="w-full bg-slate-900 hover:bg-primary hover:text-black text-white font-bold py-3 rounded-xl transition-all duration-300 text-sm flex items-center justify-center gap-2"
               >
-                Consultar
-                <motion.span
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                >
-                  <ChevronRight size={16} />
-                </motion.span>
+                <ShoppingCart size={16} />
+                Agregar al carrito
               </button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
+import { CartProvider } from './contexts/CartContext';
 import PublicLayout from './components/layout/PublicLayout';
 import Home from './pages/Home';
 import Productos from './pages/Productos';
@@ -26,6 +27,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+      <CartProvider>
       <AdminAuthProvider>
         <Routes>
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -45,6 +47,7 @@ function App() {
           </Route>
         </Routes>
       </AdminAuthProvider>
+      </CartProvider>
     </Router>
   );
 }

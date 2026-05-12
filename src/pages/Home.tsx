@@ -52,6 +52,7 @@ export default function Home() {
 
   return (
     <div>
+      {/* 1° — Hero banner */}
       <motion.section
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -107,6 +108,7 @@ export default function Home() {
         </div>
       </motion.section>
 
+      {/* 2° — Productos en Oferta */}
       <motion.section
         initial="initial"
         whileInView="animate"
@@ -116,7 +118,7 @@ export default function Home() {
       >
         <div className="container mx-auto px-4">
           <motion.div className="text-center mb-12" variants={fadeInUp}>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Productos Destacados</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Productos en Oferta</h2>
             <p className="text-gray-600 text-lg">Los repuestos más buscados por nuestros clientes</p>
           </motion.div>
 
@@ -136,7 +138,7 @@ export default function Home() {
 
               {featuredProducts.length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-gray-600 text-lg">No hay productos destacados disponibles en este momento.</p>
+                  <p className="text-gray-600 text-lg">No hay productos en oferta disponibles en este momento.</p>
                 </div>
               )}
 
@@ -153,6 +155,7 @@ export default function Home() {
         </div>
       </motion.section>
 
+      {/* 3° — Nuestros Productos */}
       <motion.section
         initial="initial"
         whileInView="animate"
@@ -165,7 +168,7 @@ export default function Home() {
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Nuestros Productos</h2>
             <p className="text-gray-600 text-lg">Encontrá el repuesto que necesitas</p>
           </motion.div>
-    
+
           {loading && (
             <div className="text-center py-12 text-gray-500">Cargando productos...</div>
           )}
@@ -181,13 +184,13 @@ export default function Home() {
                   </motion.div>
                 ))}
               </motion.div>
-    
+
               {recentProducts.length === 0 && (
                 <div className="text-center py-12">
                   <p className="text-gray-600 text-lg">No hay productos disponibles en este momento.</p>
                 </div>
               )}
-    
+
               <motion.div className="text-center mt-12" variants={fadeInUp}>
                 <Link
                   to="/productos"

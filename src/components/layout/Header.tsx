@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingCart } from 'lucide-react';
+import { useCart } from '../../contexts/CartContext';
 
 const menuLinks = [
   { to: '/', label: 'Inicio' },
@@ -12,6 +13,7 @@ const menuLinks = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { totalItems, openCart } = useCart();
 
   return (
     <header className="w-full fixed top-0 z-50">
@@ -44,6 +46,20 @@ export default function Header() {
                 Contacto
               </Link>
             </div>
+
+            {/* Cart button — visible on all screens */}
+            <button
+              onClick={openCart}
+              className="relative flex items-center justify-center w-10 h-10 rounded-xl hover:bg-slate-100 transition-colors mr-1 md:mr-0"
+              aria-label="Abrir carrito"
+            >
+              <ShoppingCart size={22} className="text-gray-800" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-black text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center leading-none">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
+            </button>
 
             <motion.button
               className="md:hidden text-gray-800 p-1"

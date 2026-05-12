@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Header from './Header';
 import Footer from './Footer';
 import WhatsAppFloatingButton from '../WhatsAppFloatingButton';
+import CartDrawer from '../CartDrawer';
 
 export default function PublicLayout() {
   const location = useLocation();
@@ -20,6 +21,7 @@ export default function PublicLayout() {
       </motion.div>
       <Footer />
       <WhatsAppFloatingButton />
+      <CartDrawer />
     </div>
   );
 }

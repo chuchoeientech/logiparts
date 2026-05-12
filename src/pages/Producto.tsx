@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MessageCircle, Package, Barcode, Tag, Car } from 'lucide-react';
+import { ArrowLeft, MessageCircle, Package, Barcode, Tag, Car, ShoppingCart } from 'lucide-react';
 import { productsApi, productImageUrl, type ProductApi } from '../api/products';
+import { useCart } from '../contexts/CartContext';
+import { Product } from '../types';
 
 function Producto() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<ProductApi | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { addItem } = useCart();
 
   useEffect(() => {
     if (!id) return;
@@ -181,7 +184,28 @@ function Producto() {
               ))}
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 flex flex-col gap-3">
+              <motion.button
+                whileHover={{ scale: 1.01, translateY: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  const mapped: Product = {
+                    ...product,
+                    name: product.descripcion || product.name || 'Sin nombre',
+                    price: Number(product.costoFinal || product.price || 0),
+                    image_url: productImageUrl(product),
+                    description: product.description ?? '',
+                    category_id: product.categoryId,
+                    created_at: product.createdAt,
+                  };
+                  addItem(mapped);
+                }}
+                className="w-full bg-primary hover:bg-[#D9A504] text-black font-extrabold px-8 py-5 rounded-2xl text-lg transition-all flex items-center justify-center gap-4 shadow-xl shadow-yellow-500/20"
+              >
+                <ShoppingCart size={24} />
+                Agregar al Carrito
+              </motion.button>
+
               <motion.button
                 whileHover={{ scale: 1.01, translateY: -2 }}
                 whileTap={{ scale: 0.98 }}
@@ -189,11 +213,8 @@ function Producto() {
                 className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white font-extrabold px-8 py-5 rounded-2xl text-lg transition-all flex items-center justify-center gap-4 shadow-xl shadow-green-500/20"
               >
                 <MessageCircle size={24} />
-                Consultar Disponibilidad
+                Consultar por WhatsApp
               </motion.button>
-              <p className="text-slate-400 text-sm mt-4 text-center font-medium">
-                Respondemos de inmediato por <span className="text-green-600 font-bold">WhatsApp</span>
-              </p>
             </div>
           </motion.div>
         </div>
