@@ -359,7 +359,7 @@ export default function Productos() {
       className="bg-[#F8FAFC] overflow-x-hidden"
       style={{ marginTop: '80px', minHeight: 'calc(100vh - 80px)' }}
     >
-      <div className="bg-slate-900 overflow-hidden relative border-b border-primary/20">
+      <div className="bg-brand overflow-hidden relative border-b border-primary/20">
         <div className="absolute inset-0 bg-primary/5 pattern-grid-lg" />
         <div className="container mx-auto px-4 py-16 md:py-20 relative">
           <motion.div
@@ -412,7 +412,7 @@ export default function Productos() {
             </p>
             <button
               onClick={() => setIsFilterOpen(true)}
-              className="flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all"
+              className="flex items-center gap-2 bg-brand text-white px-5 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all"
             >
               <Filter size={18} />
               Filtrar
@@ -515,7 +515,7 @@ export default function Productos() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFilterOpen(false)}
-              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] lg:hidden"
+              className="fixed inset-0 bg-brand/40 backdrop-blur-sm z-[100] lg:hidden"
             />
             <motion.div
               initial={{ x: '100%' }}
@@ -536,7 +536,7 @@ export default function Productos() {
               <FiltersContent />
               <button
                 onClick={() => setIsFilterOpen(false)}
-                className="w-full mt-12 bg-slate-900 text-white font-black py-4 rounded-2xl shadow-lg"
+                className="w-full mt-12 bg-brand text-white font-black py-4 rounded-2xl shadow-lg"
               >
                 Ver Resultados
               </button>

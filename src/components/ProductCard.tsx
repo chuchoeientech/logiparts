@@ -89,7 +89,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-slate-900 hover:bg-primary hover:text-black text-white font-bold py-3 rounded-xl transition-all duration-300 text-sm flex items-center justify-center gap-2"
+                className="w-full bg-brand hover:bg-primary hover:text-black text-white font-bold py-3 rounded-xl transition-all duration-300 text-sm flex items-center justify-center gap-2"
               >
                 <ShoppingCart size={16} />
                 Agregar al carrito

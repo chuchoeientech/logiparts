@@ -200,7 +200,7 @@ function Producto() {
                   };
                   addItem(mapped);
                 }}
-                className="w-full bg-primary hover:bg-[#D9A504] text-black font-extrabold px-8 py-5 rounded-2xl text-lg transition-all flex items-center justify-center gap-4 shadow-xl shadow-yellow-500/20"
+                className="w-full bg-primary hover:bg-primary-dark text-black font-extrabold px-8 py-5 rounded-2xl text-lg transition-all flex items-center justify-center gap-4 shadow-xl shadow-yellow-500/20"
               >
                 <ShoppingCart size={24} />
                 Agregar al Carrito

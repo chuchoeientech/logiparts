@@ -75,7 +75,7 @@ export default function Nosotros() {
               'url(https://images.pexels.com/photos/190574/pexels-photo-190574.jpeg?auto=compress&cs=tinysrgb&w=1920)',
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0d0d0d]/95 via-[#111111]/85 to-[#1A1A1A]/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand/95 via-brand/85 to-brand/70" />
 
         <div className="relative z-10 container mx-auto px-4 text-center text-white">
           <motion.div
@@ -113,11 +113,11 @@ export default function Nosotros() {
       </div>
 
       {/* Stats bar */}
-      <div className="bg-[#111111] border-b border-[#2a2a2a]">
+      <div className="bg-brand border-b border-brand/30">
         <div className="container mx-auto px-4">
           <motion.div
             {...stagger}
-            className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-[#2a2a2a]"
+            className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-brand/30"
           >
             {stats.map((stat, i) => (
               <motion.div
@@ -194,7 +194,7 @@ export default function Nosotros() {
                 <div className="text-3xl font-extrabold">10+</div>
                 <div className="text-sm font-semibold">Años en el mercado</div>
               </div>
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-[#111111] rounded-2xl flex flex-col items-center justify-center shadow-xl">
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-brand rounded-2xl flex flex-col items-center justify-center shadow-xl">
                 <TrendingUp size={28} className="text-primary mb-1" />
                 <span className="text-white text-xs font-bold text-center leading-tight">Líder del Mercado</span>
               </div>
@@ -300,7 +300,7 @@ export default function Nosotros() {
               'url(https://images.pexels.com/photos/1231643/pexels-photo-1231643.jpeg?auto=compress&cs=tinysrgb&w=1920)',
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0d0d0d]/95 via-[#0d0d0d]/90 to-[#0d0d0d]/95" />
+        <div className="absolute inset-0 bg-gradient-to-b from-brand/95 via-brand/90 to-brand/95" />
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
 
         <div className="relative z-10 container mx-auto px-4 text-center text-white">
@@ -318,7 +318,7 @@ export default function Nosotros() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/contacto"
-              className="inline-block bg-primary hover:bg-[#D9A504] text-black font-bold px-10 py-4 rounded-xl text-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(242,183,5,0.4)]"
+              className="inline-block bg-primary hover:bg-primary-dark text-black font-bold px-10 py-4 rounded-xl text-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(242,183,5,0.4)]"
             >
               Contactar Ahora
             </Link>

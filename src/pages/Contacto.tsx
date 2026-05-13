@@ -122,7 +122,7 @@ export default function Contacto() {
               'url(https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=1920)',
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0d0d0d]/95 via-[#111111]/85 to-[#1A1A1A]/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand/95 via-brand/85 to-brand/70" />
 
         <div className="relative z-10 container mx-auto px-4 text-center text-white">
           <motion.div
@@ -158,7 +158,7 @@ export default function Contacto() {
       </div>
 
       {/* WhatsApp highlight bar */}
-      <div className="bg-[#111111] border-b border-[#2a2a2a]">
+      <div className="bg-brand border-b border-brand/30">
         <div className="container mx-auto px-4 py-5">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -270,7 +270,7 @@ export default function Contacto() {
                     type="submit"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-primary hover:bg-[#D9A504] text-black font-bold px-8 py-4 rounded-xl text-lg transition-all duration-300 flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(242,183,5,0.35)]"
+                    className="w-full bg-primary hover:bg-primary-dark text-black font-bold px-8 py-4 rounded-xl text-lg transition-all duration-300 flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(242,183,5,0.35)]"
                   >
                     <Send size={20} />
                     Enviar Mensaje
@@ -318,7 +318,7 @@ export default function Contacto() {
       </section>
 
       {/* Maps — 2 location cards */}
-      <section className="py-16 bg-[#111111] border-t-4 border-primary">
+      <section className="py-16 bg-brand border-t-4 border-primary">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="mb-10 text-center">
             <div className="flex items-center justify-center gap-3 mb-2">
@@ -333,7 +333,7 @@ export default function Contacto() {
             {/* Card 1 */}
             <motion.div
               {...fadeInUp}
-              className="bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-xl ring-1 ring-white/10 hover:ring-primary/50 transition-all duration-300"
+              className="bg-brand rounded-2xl overflow-hidden shadow-xl ring-1 ring-white/10 hover:ring-primary/50 transition-all duration-300"
             >
               <div className="px-6 py-4 flex items-start gap-3 border-b border-white/10">
                 <div className="flex-shrink-0 w-10 h-10 bg-primary/10 border border-primary/30 rounded-xl flex items-center justify-center mt-0.5">
@@ -362,7 +362,7 @@ export default function Contacto() {
             {/* Card 2 */}
             <motion.div
               {...fadeInUp}
-              className="bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-xl ring-1 ring-white/10 hover:ring-primary/50 transition-all duration-300"
+              className="bg-brand rounded-2xl overflow-hidden shadow-xl ring-1 ring-white/10 hover:ring-primary/50 transition-all duration-300"
             >
               <div className="px-6 py-4 flex items-start gap-3 border-b border-white/10">
                 <div className="flex-shrink-0 w-10 h-10 bg-primary/10 border border-primary/30 rounded-xl flex items-center justify-center mt-0.5">
