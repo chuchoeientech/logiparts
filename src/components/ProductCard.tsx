@@ -11,12 +11,17 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const formatPrice = (price: number) => new Intl.NumberFormat('es-PY').format(price);
-  const { addItem } = useCart();
+  const { addItem, items } = useCart();
+
+  const cartQty = items.find((i) => i.product.id === product.id)?.quantity ?? 0;
+  const outOfStock = product.cantDisponible != null && product.cantDisponible <= 0;
+  const atMax = product.cantDisponible != null && cartQty >= product.cantDisponible;
+  const cartDisabled = outOfStock || atMax;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem(product);
+    if (!cartDisabled) addItem(product);
   };
 
   const firstVehicle = product.vehicles?.[0];
@@ -89,10 +94,11 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-brand hover:bg-primary hover:text-black text-white font-bold py-3 rounded-xl transition-all duration-300 text-sm flex items-center justify-center gap-2"
+                disabled={cartDisabled}
+                className={`w-full font-bold py-3 rounded-xl transition-all duration-300 text-sm flex items-center justify-center gap-2 ${cartDisabled ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-brand hover:bg-primary hover:text-black text-white'}`}
               >
                 <ShoppingCart size={16} />
-                Agregar al carrito
+                {outOfStock ? 'Sin stock' : atMax ? 'Límite de stock' : 'Agregar al carrito'}
               </button>
             </div>
           </div>

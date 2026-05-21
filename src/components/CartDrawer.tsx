@@ -108,7 +108,8 @@ export default function CartDrawer() {
                               </span>
                               <button
                                 onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                                className="w-8 h-8 flex items-center justify-center hover:bg-slate-100 transition-colors"
+                                disabled={item.product.cantDisponible != null && item.quantity >= item.product.cantDisponible}
+                                className={`w-8 h-8 flex items-center justify-center transition-colors ${item.product.cantDisponible != null && item.quantity >= item.product.cantDisponible ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-100'}`}
                               >
                                 <Plus size={14} className="text-slate-600" />
                               </button>

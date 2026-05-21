@@ -13,7 +13,7 @@ function Producto() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
-  const { addItem, closeCart } = useCart();
+  const { addItem, closeCart, items } = useCart();
 
   useEffect(() => {
     if (!id) return;
@@ -77,6 +77,11 @@ function Producto() {
   const firstVehicle = product.vehicles?.[0];
   const marca = firstVehicle?.nombreMarca ?? null;
   const modelo = firstVehicle?.nombreModelo ?? null;
+
+  const cartQty = items.find((i) => i.product.id === product.id)?.quantity ?? 0;
+  const outOfStock = product.cantDisponible != null && product.cantDisponible <= 0;
+  const atMax = product.cantDisponible != null && cartQty >= product.cantDisponible;
+  const stockDisabled = outOfStock || atMax;
 
   const tiles = [
     { label: 'Stock', value: product.cantDisponible != null ? `${product.cantDisponible} uds.` : 'N/A', icon: <Package size={20} /> },
@@ -169,26 +174,28 @@ function Producto() {
 
             <div className="pt-2 flex flex-col gap-3">
               <motion.button
-                whileHover={{ scale: 1.01, translateY: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => addItem(mapProduct())}
-                className="w-full bg-primary hover:bg-primary-dark text-black font-extrabold px-6 py-3 rounded-2xl text-base transition-all flex items-center justify-center gap-3 shadow-xl shadow-yellow-500/20"
+                whileHover={!stockDisabled ? { scale: 1.01, translateY: -2 } : {}}
+                whileTap={!stockDisabled ? { scale: 0.98 } : {}}
+                onClick={() => { if (!stockDisabled) addItem(mapProduct()); }}
+                disabled={stockDisabled}
+                className={`w-full font-extrabold px-6 py-3 rounded-2xl text-base transition-all flex items-center justify-center gap-3 ${stockDisabled ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' : 'bg-primary hover:bg-primary-dark text-black shadow-xl shadow-yellow-500/20'}`}
               >
                 <ShoppingCart size={20} />
-                Agregar al Carrito
+                {outOfStock ? 'Sin stock' : atMax ? 'Límite de stock alcanzado' : 'Agregar al Carrito'}
               </motion.button>
 
               <motion.button
-                whileHover={{ scale: 1.01, translateY: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => { addItem(mapProduct()); closeCart(); setShowCheckout(true); }}
-                className="w-full text-white font-extrabold px-6 py-3 rounded-2xl text-base transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-900/20"
-                style={{ backgroundColor: '#1B2A6B' }}
-                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#16235a')}
-                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#1B2A6B')}
+                whileHover={!stockDisabled ? { scale: 1.01, translateY: -2 } : {}}
+                whileTap={!stockDisabled ? { scale: 0.98 } : {}}
+                onClick={() => { if (!stockDisabled) { addItem(mapProduct()); closeCart(); setShowCheckout(true); } }}
+                disabled={stockDisabled}
+                className={`w-full font-extrabold px-6 py-3 rounded-2xl text-base transition-all flex items-center justify-center gap-3 ${stockDisabled ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' : 'text-white shadow-xl shadow-blue-900/20'}`}
+                style={!stockDisabled ? { backgroundColor: '#1B2A6B' } : {}}
+                onMouseEnter={e => { if (!stockDisabled) e.currentTarget.style.backgroundColor = '#16235a'; }}
+                onMouseLeave={e => { if (!stockDisabled) e.currentTarget.style.backgroundColor = '#1B2A6B'; }}
               >
                 <ShoppingBag size={20} />
-                Realizar Compra
+                {outOfStock ? 'Sin stock' : atMax ? 'Límite de stock alcanzado' : 'Realizar Compra'}
               </motion.button>
             </div>
           </motion.div>
