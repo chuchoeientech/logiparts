@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowLeft, MessageCircle, Package, Barcode, Tag, Car, ShoppingCart } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, ShoppingBag, Package, Barcode, Tag, Car, ShoppingCart } from 'lucide-react';
 import { productsApi, productImageUrl, type ProductApi } from '../api/products';
 import { useCart } from '../contexts/CartContext';
 import { Product } from '../types';
+import CheckoutModal from '../components/CheckoutModal';
 
 function Producto() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<ProductApi | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { addItem } = useCart();
+  const [showCheckout, setShowCheckout] = useState(false);
+  const { addItem, closeCart } = useCart();
 
   useEffect(() => {
     if (!id) return;
@@ -34,35 +36,15 @@ function Producto() {
 
   const formatPrice = (price: number) => new Intl.NumberFormat('es-PY').format(price);
 
-  const handleConsultar = () => {
-    if (!product) return;
-
-    const lines: string[] = [
-      `Hola! Estoy interesado en el siguiente repuesto:`,
-      ``,
-      `📦 *Producto:* ${product.descripcion || product.name}`,
-      `💰 *Precio:* Gs. ${formatPrice(Number(product.costoFinal || product.price || 0))}`,
-      `📊 *Stock disponible:* ${product.cantDisponible != null ? `${product.cantDisponible} uds.` : 'N/A'}`,
-    ];
-
-    if (product.codigoBarra) {
-      lines.push(`🔢 *Código de barras:* ${product.codigoBarra}`);
-    }
-    if (product.category?.name) {
-      lines.push(`🏷️ *Categoría:* ${product.category.name}`);
-    }
-    if (product.vehicles && product.vehicles.length > 0) {
-      const vehicleList = product.vehicles
-        .map(v => `${v.nombreMarca} ${v.nombreModelo}${v.anio ? ` (${v.anio})` : ''}`)
-        .join(', ');
-      lines.push(`🚗 *Vehículos compatibles:* ${vehicleList}`);
-    }
-
-    lines.push(``, `¿Está disponible para la venta?`);
-
-    const whatsappUrl = `https://wa.me/595981234567?text=${encodeURIComponent(lines.join('\n'))}`;
-    window.open(whatsappUrl, '_blank');
-  };
+  const mapProduct = (): Product => ({
+    ...product!,
+    name: product!.descripcion || product!.name || 'Sin nombre',
+    price: Number(product!.costoFinal || product!.price || 0),
+    image_url: productImageUrl(product!),
+    description: product!.description ?? '',
+    category_id: product!.categoryId,
+    created_at: product!.createdAt,
+  });
 
   if (loading) {
     return (
@@ -104,6 +86,7 @@ function Producto() {
   ];
 
   return (
+    <>
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -127,7 +110,7 @@ function Producto() {
           </Link>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 max-w-5xl mx-auto">
           {/* Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
@@ -135,7 +118,7 @@ function Producto() {
             transition={{ delay: 0.15, duration: 0.4 }}
             className="relative group"
           >
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden aspect-square sticky top-28">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden aspect-square max-h-[400px] sticky top-28">
               {imageUrl ? (
                 <img
                   src={imageUrl}
@@ -158,22 +141,22 @@ function Producto() {
             transition={{ delay: 0.25, duration: 0.4 }}
             className="flex flex-col lg:py-4"
           >
-            <div className="flex flex-col gap-4 mb-8">
-              <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 leading-[1.15]">
+            <div className="flex flex-col gap-3 mb-5">
+              <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 leading-[1.15]">
                 {product.descripcion || product.name}
               </h1>
               <div className="flex items-center gap-3">
-                <div className="text-4xl md:text-5xl font-black text-primary tracking-tight">
+                <div className="text-2xl md:text-3xl font-black text-primary tracking-tight">
                   {formatPrice(Number(product.costoFinal || product.price || 0))}
-                  <span className="text-xl md:text-2xl ml-1 font-bold">Gs</span>
+                  <span className="text-sm md:text-base ml-1 font-bold">Gs</span>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-10">
+            <div className="grid grid-cols-2 gap-3 mb-6">
               {tiles.map(({ label, value, icon }) => (
-                <div key={label} className="bg-white border border-slate-200 p-4 rounded-xl flex items-center gap-4 shadow-sm">
-                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary shrink-0">
+                <div key={label} className="bg-white border border-slate-200 p-3 rounded-xl flex items-center gap-3 shadow-sm">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary shrink-0">
                     {icon}
                   </div>
                   <div className="min-w-0">
@@ -188,38 +171,35 @@ function Producto() {
               <motion.button
                 whileHover={{ scale: 1.01, translateY: -2 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  const mapped: Product = {
-                    ...product,
-                    name: product.descripcion || product.name || 'Sin nombre',
-                    price: Number(product.costoFinal || product.price || 0),
-                    image_url: productImageUrl(product),
-                    description: product.description ?? '',
-                    category_id: product.categoryId,
-                    created_at: product.createdAt,
-                  };
-                  addItem(mapped);
-                }}
-                className="w-full bg-primary hover:bg-primary-dark text-black font-extrabold px-8 py-5 rounded-2xl text-lg transition-all flex items-center justify-center gap-4 shadow-xl shadow-yellow-500/20"
+                onClick={() => addItem(mapProduct())}
+                className="w-full bg-primary hover:bg-primary-dark text-black font-extrabold px-6 py-3 rounded-2xl text-base transition-all flex items-center justify-center gap-3 shadow-xl shadow-yellow-500/20"
               >
-                <ShoppingCart size={24} />
+                <ShoppingCart size={20} />
                 Agregar al Carrito
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.01, translateY: -2 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={handleConsultar}
-                className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white font-extrabold px-8 py-5 rounded-2xl text-lg transition-all flex items-center justify-center gap-4 shadow-xl shadow-green-500/20"
+                onClick={() => { addItem(mapProduct()); closeCart(); setShowCheckout(true); }}
+                className="w-full text-white font-extrabold px-6 py-3 rounded-2xl text-base transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-900/20"
+                style={{ backgroundColor: '#1B2A6B' }}
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#16235a')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#1B2A6B')}
               >
-                <MessageCircle size={24} />
-                Consultar por WhatsApp
+                <ShoppingBag size={20} />
+                Realizar Compra
               </motion.button>
             </div>
           </motion.div>
         </div>
       </div>
     </motion.div>
+
+    <AnimatePresence>
+      {showCheckout && <CheckoutModal onClose={() => setShowCheckout(false)} />}
+    </AnimatePresence>
+  </>
   );
 }
 

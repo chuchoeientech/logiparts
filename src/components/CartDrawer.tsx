@@ -139,9 +139,9 @@ export default function CartDrawer() {
                   </div>
                   <button
                     onClick={() => { closeCart(); setShowCheckout(true); }}
-                    className="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white font-extrabold py-4 rounded-2xl text-base transition-all shadow-lg shadow-green-500/20 flex items-center justify-center gap-2"
+                    className="w-full bg-primary hover:bg-primary-dark text-black font-extrabold py-4 rounded-2xl text-base transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-2"
                   >
-                    Hacer Pedido por WhatsApp
+                    Finalizar Compra
                   </button>
                 </div>
               )}

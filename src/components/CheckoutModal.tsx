@@ -105,7 +105,7 @@ export default function CheckoutModal({ onClose }: Props) {
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ duration: 0.25 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between rounded-t-3xl z-10">
