@@ -41,7 +41,7 @@ export default function Footer() {
               <a href="https://www.tiktok.com/@logispartspy" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                 <TikTokIcon size={24} />
               </a>
-              <a href="https://wa.me/595974420367" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+              <a href="https://wa.me/595971191016" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                 <WhatsAppIcon size={24} />
               </a>
             </div>

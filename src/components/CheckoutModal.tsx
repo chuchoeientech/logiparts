@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, FileText, User, Send, ChevronLeft, ShoppingBag } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 
-const WHATSAPP_NUMBER = '595974420367';
+const WHATSAPP_NUMBER = '595971191016';
 
 const fmt = (n: number) => new Intl.NumberFormat('es-PY').format(n);
 

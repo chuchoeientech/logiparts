@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-const WHATSAPP_NUMBER = '595974420367';
+const WHATSAPP_NUMBER = '595971191016';
 const DEFAULT_MESSAGE = 'Hola, me gustaría obtener más información sobre sus productos.';
 
 /** Icono oficial de WhatsApp (logo marca) */
