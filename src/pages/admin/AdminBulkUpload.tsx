@@ -124,10 +124,14 @@ export default function AdminBulkUpload() {
                                 </div>
                                 <h2 className="text-xl font-bold text-gray-900">Proceso Completado</h2>
                                 <p className="text-gray-600 mt-1">Se han procesado {result.total} filas del archivo.</p>
-                                <div className="grid grid-cols-2 gap-4 w-full mt-6">
+                                <div className="grid grid-cols-3 gap-4 w-full mt-6">
                                     <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
                                         <p className="text-3xl font-bold text-green-600">{result.success}</p>
                                         <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Exitosos</p>
+                                    </div>
+                                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                        <p className="text-3xl font-bold text-orange-500">{result.deleted}</p>
+                                        <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Eliminados</p>
                                     </div>
                                     <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
                                         <p className="text-3xl font-bold text-red-600">{result.errors.length}</p>
@@ -216,6 +220,8 @@ export default function AdminBulkUpload() {
                         <li>Si ya existe un producto con el mismo <strong>Código de Barra</strong>, se actualiza.</li>
                         <li>Si no hay código de barra pero coincide la <strong>Descripción</strong>, también se actualiza.</li>
                         <li>Si no existe ninguna coincidencia, se crea un producto nuevo.</li>
+                        <li><strong>El Excel manda:</strong> los productos que existen en la base de datos pero no aparecen en el archivo serán eliminados.</li>
+                        <li>Las imágenes se conservan aunque el producto se elimine — si el producto vuelve en una carga futura, la imagen se re-asocia automáticamente.</li>
                         <li>Los vehículos (Marca + Modelo) se crean automáticamente si no existen.</li>
                     </ul>
                 </div>
