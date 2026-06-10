@@ -46,7 +46,7 @@ function FeaturedProductCard({ product, index }: { product: Product; index: numb
           className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 overflow-hidden flex flex-col sm:flex-row h-full"
         >
           {/* Image */}
-          <div className="relative w-full sm:w-52 shrink-0 aspect-square sm:aspect-auto bg-slate-50 flex items-center justify-center border-b sm:border-b-0 sm:border-r border-slate-100 overflow-hidden">
+          <div className="relative w-full sm:w-52 shrink-0 aspect-[4/3] sm:aspect-auto bg-slate-50 flex items-center justify-center border-b sm:border-b-0 sm:border-r border-slate-100 overflow-hidden">
             <span className="absolute top-3 left-3 z-10 flex items-center gap-1 bg-primary text-black text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow">
               <Tag size={10} />
               Oferta
@@ -67,7 +67,7 @@ function FeaturedProductCard({ product, index }: { product: Product; index: numb
           </div>
 
           {/* Text */}
-          <div className="flex-1 p-6 flex flex-col gap-3 justify-between">
+          <div className="flex-1 p-4 sm:p-6 flex flex-col gap-3 justify-between">
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-bold text-slate-900 line-clamp-2 group-hover:text-primary transition-colors leading-snug">
                 {product.name}
@@ -96,7 +96,7 @@ function FeaturedProductCard({ product, index }: { product: Product; index: numb
 
             <div className="flex flex-col gap-3 mt-auto">
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-primary tracking-tight">
+                <span className="text-2xl sm:text-3xl font-black text-primary tracking-tight">
                   {formatPrice(product.price)}
                 </span>
                 <span className="text-sm font-bold text-primary">Gs</span>
@@ -301,7 +301,7 @@ export default function Home() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="relative flex items-center justify-center bg-brand py-16"
+        className="relative flex items-center justify-center bg-black py-16"
       >
         <div
           className="absolute inset-0 opacity-20"
@@ -375,7 +375,7 @@ export default function Home() {
           )}
           {!loading && !error && (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 items-stretch">
                 {recentProducts.map((product, index) => (
                   <ProductCard key={product.id} product={product} index={index} />
                 ))}

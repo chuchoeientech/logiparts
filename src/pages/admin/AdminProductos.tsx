@@ -129,6 +129,18 @@ export default function AdminProductos() {
     }
   };
 
+  const toggleFeatured = async (p: ProductApi) => {
+    setError('');
+    try {
+      await productsApi.update(p.id, { isFeatured: !p.isFeatured });
+      setProducts((prev) =>
+        prev.map((x) => (x.id === p.id ? { ...x, isFeatured: !p.isFeatured } : x)),
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Error al actualizar destacado');
+    }
+  };
+
   const handleDelete = async (id: string) => {
     setError('');
     try {
@@ -224,11 +236,17 @@ export default function AdminProductos() {
                     <td className="px-4 py-3 text-gray-700">{p.cantDisponible} uds.</td>
                     <td className="px-4 py-3 text-gray-600">{getCategoryName(p.categoryId)}</td>
                     <td className="px-4 py-3">
-                      {p.isFeatured ? (
-                        <Star className="text-primary" size={18} fill="currentColor" />
-                      ) : (
-                        <span className="text-gray-400">—</span>
-                      )}
+                      <button
+                        onClick={() => toggleFeatured(p)}
+                        className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                        title={p.isFeatured ? 'Quitar de destacados' : 'Marcar como destacado'}
+                      >
+                        <Star
+                          size={18}
+                          className={p.isFeatured ? 'text-primary' : 'text-gray-300'}
+                          fill={p.isFeatured ? 'currentColor' : 'none'}
+                        />
+                      </button>
                     </td>
                     <td className="px-4 py-3 flex gap-2">
                       <button onClick={() => openEdit(p)} className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg" title="Editar">

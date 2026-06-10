@@ -48,16 +48,16 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               />
             ) : (
               <div className="flex flex-col items-center justify-center text-slate-300">
-                <Package size={64} strokeWidth={1} />
+                <Package className="w-10 h-10 sm:w-16 sm:h-16" strokeWidth={1} />
                 <span className="text-[10px] uppercase tracking-[0.2em] mt-3 font-bold opacity-60">Sin imágen</span>
               </div>
             )}
             <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
 
-          <div className="p-5 flex-1 flex flex-col gap-3">
+          <div className="p-3 sm:p-5 flex-1 flex flex-col gap-2 sm:gap-3">
             {/* Título */}
-            <h3 className="text-base font-bold text-slate-900 line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+            <h3 className="text-sm sm:text-base font-bold text-slate-900 line-clamp-2 group-hover:text-primary transition-colors leading-snug">
               {product.name}
             </h3>
 
@@ -83,19 +83,19 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               )}
             </div>
 
-            <div className="flex flex-col gap-3 mt-auto pt-1">
+            <div className="flex flex-col gap-2 sm:gap-3 mt-auto pt-1">
               {/* Precio */}
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black text-primary tracking-tight">
+                <span className="text-lg sm:text-2xl font-black text-primary tracking-tight">
                   {formatPrice(product.price)}
                 </span>
-                <span className="text-sm font-bold text-primary">Gs</span>
+                <span className="text-xs sm:text-sm font-bold text-primary">Gs</span>
               </div>
 
               <button
                 onClick={handleAddToCart}
                 disabled={cartDisabled}
-                className={`w-full font-bold py-3 rounded-xl transition-all duration-300 text-sm flex items-center justify-center gap-2 ${cartDisabled ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-brand hover:bg-primary hover:text-black text-white'}`}
+                className={`w-full font-bold py-2.5 sm:py-3 rounded-xl transition-all duration-300 text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 ${cartDisabled ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-brand hover:bg-primary hover:text-black text-white'}`}
               >
                 <ShoppingCart size={16} />
                 {outOfStock ? 'Sin stock' : atMax ? 'Límite de stock' : 'Agregar al carrito'}

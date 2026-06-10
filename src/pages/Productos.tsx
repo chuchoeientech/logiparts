@@ -142,7 +142,9 @@ export default function Productos() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const FiltersContent = () => (
+  // JSX plano (no componente): si fuera un componente recreado en cada render,
+  // React lo desmontaría y el input de búsqueda perdería el foco tras cada letra.
+  const filtersContent = (
     <div className="flex flex-col gap-10">
       {/* Search Filter (Inside Mobile Drawer or Desktop Sidebar) */}
       <div className="lg:hidden">
@@ -152,7 +154,7 @@ export default function Productos() {
             type="text"
             placeholder="Nombre, código, marca o modelo..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary/50"
           />
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -359,7 +361,7 @@ export default function Productos() {
       className="bg-[#F8FAFC] overflow-x-hidden"
       style={{ marginTop: '80px', minHeight: 'calc(100vh - 80px)' }}
     >
-      <div className="bg-brand overflow-hidden relative border-b border-primary/20">
+      <div className="bg-black overflow-hidden relative border-b border-primary/20">
         <div className="absolute inset-0 bg-primary/5 pattern-grid-lg" />
         <div className="container mx-auto px-4 py-16 md:py-20 relative">
           <motion.div
@@ -379,7 +381,7 @@ export default function Productos() {
                   type="text"
                   placeholder="Nombre, código, marca o modelo..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                   className="w-full bg-transparent pl-12 pr-4 py-3 text-white placeholder-slate-400 font-bold outline-none"
                 />
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={24} />
@@ -401,7 +403,7 @@ export default function Productos() {
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block lg:w-72 flex-shrink-0">
             <div className="sticky top-28 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-              <FiltersContent />
+              {filtersContent}
             </div>
           </aside>
 
@@ -439,7 +441,7 @@ export default function Productos() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 items-stretch">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-16 items-stretch">
                   {currentProducts.map((product, index) => (
                     <ProductCard key={product.id} product={product} index={index} />
                   ))}
@@ -515,7 +517,7 @@ export default function Productos() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFilterOpen(false)}
-              className="fixed inset-0 bg-brand/40 backdrop-blur-sm z-[100] lg:hidden"
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] lg:hidden"
             />
             <motion.div
               initial={{ x: '100%' }}
@@ -533,7 +535,7 @@ export default function Productos() {
                   <X size={24} className="text-slate-400" />
                 </button>
               </div>
-              <FiltersContent />
+              {filtersContent}
               <button
                 onClick={() => setIsFilterOpen(false)}
                 className="w-full mt-12 bg-brand text-white font-black py-4 rounded-2xl shadow-lg"

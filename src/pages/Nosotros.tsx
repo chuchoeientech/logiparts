@@ -75,7 +75,7 @@ export default function Nosotros() {
               'url(https://images.pexels.com/photos/190574/pexels-photo-190574.jpeg?auto=compress&cs=tinysrgb&w=1920)',
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand/95 via-brand/85 to-brand/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/85 to-black/70" />
 
         <div className="relative z-10 container mx-auto px-4 text-center text-white">
           <motion.div
@@ -113,11 +113,11 @@ export default function Nosotros() {
       </div>
 
       {/* Stats bar */}
-      <div className="bg-brand border-b border-brand/30">
+      <div className="bg-black border-b border-white/10">
         <div className="container mx-auto px-4">
           <motion.div
             {...stagger}
-            className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-brand/30"
+            className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10"
           >
             {stats.map((stat, i) => (
               <motion.div
@@ -194,7 +194,7 @@ export default function Nosotros() {
                 <div className="text-3xl font-extrabold">10+</div>
                 <div className="text-sm font-semibold">Años en el mercado</div>
               </div>
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-brand rounded-2xl flex flex-col items-center justify-center shadow-xl">
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-black rounded-2xl flex flex-col items-center justify-center shadow-xl">
                 <TrendingUp size={28} className="text-primary mb-1" />
                 <span className="text-white text-xs font-bold text-center leading-tight">Líder del Mercado</span>
               </div>
@@ -300,7 +300,7 @@ export default function Nosotros() {
               'url(https://images.pexels.com/photos/1231643/pexels-photo-1231643.jpeg?auto=compress&cs=tinysrgb&w=1920)',
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-brand/95 via-brand/90 to-brand/95" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/95 via-black/90 to-black/95" />
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
 
         <div className="relative z-10 container mx-auto px-4 text-center text-white">

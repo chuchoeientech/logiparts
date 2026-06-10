@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, FileText, User, Send, ChevronLeft, ShoppingBag } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, Send, ShoppingBag } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 
 const WHATSAPP_NUMBER = '595971191016';
@@ -10,8 +10,6 @@ const fmt = (n: number) => new Intl.NumberFormat('es-PY').format(n);
 interface Props {
   onClose: () => void;
 }
-
-type Step = 'factura' | 'form';
 
 interface FormData {
   nombre: string;
@@ -33,8 +31,6 @@ const empty: FormData = {
 
 export default function CheckoutModal({ onClose }: Props) {
   const { items, totalPrice, clearCart } = useCart();
-  const [step, setStep] = useState<Step>('factura');
-  const [wantsFactura, setWantsFactura] = useState<boolean | null>(null);
   const [form, setForm] = useState<FormData>(empty);
 
   const set = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -60,27 +56,17 @@ export default function CheckoutModal({ onClose }: Props) {
 
     lines.push('', `💰 *TOTAL: Gs. ${fmt(totalPrice)}*`, '──────────────────────');
 
-    if (wantsFactura) {
-      lines.push(
-        '',
-        '📄 *DATOS DE FACTURACIÓN:*',
-        `Nombre: ${form.nombre}`,
-        `Teléfono: ${form.telefono}`,
-        `RUC: ${form.ruc}`,
-        `Razón Social: ${form.razonSocial}`,
-        `Dirección: ${form.direccion}`,
-        `Correo: ${form.correo}`,
-        '──────────────────────'
-      );
-    } else {
-      lines.push(
-        '',
-        '👤 *DATOS DEL CLIENTE:*',
-        `Nombre: ${form.nombre}`,
-        `Teléfono: ${form.telefono}`,
-        '──────────────────────'
-      );
-    }
+    lines.push(
+      '',
+      '📄 *DATOS DE FACTURACIÓN:*',
+      `Nombre: ${form.nombre}`,
+      `Teléfono: ${form.telefono}`,
+      `RUC: ${form.ruc.trim() || '—'}`,
+      `Razón Social: ${form.razonSocial.trim() || '—'}`,
+      `Dirección: ${form.direccion.trim() || '—'}`,
+      `Correo: ${form.correo.trim() || '—'}`,
+      '──────────────────────'
+    );
 
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`;
     window.open(url, '_blank');
@@ -88,9 +74,7 @@ export default function CheckoutModal({ onClose }: Props) {
     onClose();
   };
 
-  const canSend = wantsFactura === false
-    ? form.nombre.trim() && form.telefono.trim()
-    : form.nombre.trim() && form.telefono.trim() && form.ruc.trim() && form.razonSocial.trim() && form.direccion.trim();
+  const canSend = form.nombre.trim() && form.telefono.trim();
 
   return (
     <div
@@ -109,19 +93,9 @@ export default function CheckoutModal({ onClose }: Props) {
       >
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between rounded-t-3xl z-10">
-          <div className="flex items-center gap-3">
-            {step === 'form' && (
-              <button
-                onClick={() => setStep('factura')}
-                className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
-              >
-                <ChevronLeft size={20} className="text-slate-500" />
-              </button>
-            )}
-            <div className="flex items-center gap-2">
-              <ShoppingBag size={20} className="text-primary" />
-              <h2 className="text-lg font-black text-slate-900">Finalizar Pedido</h2>
-            </div>
+          <div className="flex items-center gap-2">
+            <ShoppingBag size={20} className="text-primary" />
+            <h2 className="text-lg font-black text-slate-900">Finalizar Pedido</h2>
           </div>
           <button
             onClick={onClose}
@@ -154,92 +128,36 @@ export default function CheckoutModal({ onClose }: Props) {
             </div>
           </div>
 
-          <AnimatePresence mode="wait">
-            {/* Step 1 — ¿Factura? */}
-            {step === 'factura' && (
-              <motion.div
-                key="factura"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.2 }}
-              >
-                <p className="text-base font-bold text-slate-900 mb-2 text-center">¿Desea factura?</p>
-                <p className="text-sm text-slate-400 text-center mb-6">
-                  Si requiere factura necesitaremos sus datos fiscales.
-                </p>
+          {/* Datos de facturación */}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-bold bg-primary/10 text-primary px-3 py-1 rounded-full">Datos de facturación</span>
+          </div>
+          <p className="text-xs text-slate-400 mb-5">
+            Todos los pedidos se emiten con factura. Nombre y teléfono son obligatorios; los demás datos podés completarlos después.
+          </p>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    onClick={() => { setWantsFactura(true); setStep('form'); }}
-                    className="flex flex-col items-center gap-3 border-2 border-slate-200 hover:border-primary hover:bg-primary/5 rounded-2xl p-6 transition-all group"
-                  >
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary transition-colors">
-                      <FileText size={22} className="text-primary group-hover:text-black transition-colors" />
-                    </div>
-                    <span className="font-bold text-slate-800 text-sm">Sí, con factura</span>
-                  </button>
+          <div className="space-y-4">
+            <Field label="Nombre completo *" value={form.nombre} onChange={set('nombre')} placeholder="Ej: Juan Pérez" />
+            <Field label="Teléfono *" value={form.telefono} onChange={set('telefono')} placeholder="Ej: 0981 123 456" type="tel" />
+            <Field label="RUC" value={form.ruc} onChange={set('ruc')} placeholder="Ej: 1234567-8" />
+            <Field label="Razón Social" value={form.razonSocial} onChange={set('razonSocial')} placeholder="Ej: Empresa S.A." />
+            <Field label="Dirección" value={form.direccion} onChange={set('direccion')} placeholder="Ej: Av. España 1234" />
+            <Field label="Correo electrónico" value={form.correo} onChange={set('correo')} placeholder="correo@empresa.com" type="email" />
+          </div>
 
-                  <button
-                    onClick={() => { setWantsFactura(false); setStep('form'); }}
-                    className="flex flex-col items-center gap-3 border-2 border-slate-200 hover:border-primary hover:bg-primary/5 rounded-2xl p-6 transition-all group"
-                  >
-                    <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center group-hover:bg-primary transition-colors">
-                      <User size={22} className="text-slate-500 group-hover:text-black transition-colors" />
-                    </div>
-                    <span className="font-bold text-slate-800 text-sm">Sin factura</span>
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 2 — Formulario */}
-            {step === 'form' && (
-              <motion.div
-                key="form"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="flex items-center gap-2 mb-5">
-                  {wantsFactura ? (
-                    <span className="text-xs font-bold bg-primary/10 text-primary px-3 py-1 rounded-full">Con factura</span>
-                  ) : (
-                    <span className="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1 rounded-full">Sin factura</span>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  <Field label="Nombre completo *" value={form.nombre} onChange={set('nombre')} placeholder="Ej: Juan Pérez" />
-                  <Field label="Teléfono *" value={form.telefono} onChange={set('telefono')} placeholder="Ej: 0981 123 456" type="tel" />
-
-                  {wantsFactura && (
-                    <>
-                      <Field label="RUC *" value={form.ruc} onChange={set('ruc')} placeholder="Ej: 1234567-8" />
-                      <Field label="Razón Social *" value={form.razonSocial} onChange={set('razonSocial')} placeholder="Ej: Empresa S.A." />
-                      <Field label="Dirección *" value={form.direccion} onChange={set('direccion')} placeholder="Ej: Av. España 1234" />
-                      <Field label="Correo electrónico" value={form.correo} onChange={set('correo')} placeholder="correo@empresa.com" type="email" />
-                    </>
-                  )}
-                </div>
-
-                <motion.button
-                  onClick={handleSend}
-                  disabled={!canSend}
-                  whileHover={canSend ? { scale: 1.01 } : {}}
-                  whileTap={canSend ? { scale: 0.98 } : {}}
-                  className="mt-6 w-full bg-[#25D366] hover:bg-[#20BA5A] disabled:bg-slate-200 disabled:text-slate-400 text-white disabled:cursor-not-allowed font-extrabold px-6 py-4 rounded-2xl text-base transition-all flex items-center justify-center gap-3 shadow-lg shadow-green-500/20"
-                >
-                  <Send size={20} />
-                  Enviar pedido por WhatsApp
-                </motion.button>
-                <p className="text-xs text-slate-400 text-center mt-3">
-                  Se abrirá WhatsApp con todos los detalles de tu pedido.
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <motion.button
+            onClick={handleSend}
+            disabled={!canSend}
+            whileHover={canSend ? { scale: 1.01 } : {}}
+            whileTap={canSend ? { scale: 0.98 } : {}}
+            className="mt-6 w-full bg-[#25D366] hover:bg-[#20BA5A] disabled:bg-slate-200 disabled:text-slate-400 text-white disabled:cursor-not-allowed font-extrabold px-6 py-4 rounded-2xl text-base transition-all flex items-center justify-center gap-3 shadow-lg shadow-green-500/20"
+          >
+            <Send size={20} />
+            Enviar pedido por WhatsApp
+          </motion.button>
+          <p className="text-xs text-slate-400 text-center mt-3">
+            Se abrirá WhatsApp con todos los detalles de tu pedido.
+          </p>
         </div>
       </motion.div>
     </div>
