@@ -1,0 +1,25 @@
+{
+  "name": "Logisparts - Repuestos Automotrices",
+  "short_name": "Logisparts",
+  "description": "Distribuidor de repuestos automotrices originales y alternativos en Paraguay.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2E2A80",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

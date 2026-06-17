@@ -2,6 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import { Navigate } from 'react-router-dom';
 import { LayoutDashboard, FolderOpen, Package, Car, LogOut } from 'lucide-react';
+import Seo from '../../components/Seo';
 
 export default function AdminLayout() {
   const { isAuthenticated, logout } = useAdminAuth();
@@ -22,6 +23,7 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-gray-900 flex">
+      <Seo title="Panel de Administración" noindex />
       <aside className="w-64 bg-dark-gray flex flex-col fixed inset-y-0">
         <div className="p-6 border-b border-gray-700">
           <h1 className="text-xl font-bold text-primary">Logisparts Admin</h1>

@@ -6,6 +6,7 @@ import { productsApi, productImageUrl, type ProductApi } from '../api/products';
 import { useCart } from '../contexts/CartContext';
 import { Product } from '../types';
 import CheckoutModal from '../components/CheckoutModal';
+import Seo from '../components/Seo';
 
 function Producto() {
   const { id } = useParams<{ id: string }>();
@@ -90,8 +91,40 @@ function Producto() {
     { label: 'Modelo', value: modelo || 'N/A', icon: <Car size={20} /> },
   ];
 
+  const productName = product.descripcion || product.name || 'Repuesto';
+  const productPrice = Number(product.costoFinal || product.price || 0);
+  const productDescription =
+    product.description ||
+    `${productName}${marca ? ` para ${marca}${modelo ? ` ${modelo}` : ''}` : ''}. Disponible en Logisparts, repuestos automotrices en Paraguay.`;
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: productName,
+    description: productDescription,
+    ...(imageUrl ? { image: imageUrl } : {}),
+    ...(product.codigoBarra ? { sku: product.codigoBarra, gtin: product.codigoBarra } : {}),
+    ...(marca ? { brand: { '@type': 'Brand', name: marca } } : {}),
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'PYG',
+      price: productPrice,
+      availability: outOfStock
+        ? 'https://schema.org/OutOfStock'
+        : 'https://schema.org/InStock',
+      seller: { '@type': 'Organization', name: 'Logisparts' },
+    },
+  };
+
   return (
     <>
+    <Seo
+      title={productName}
+      description={productDescription}
+      path={`/productos/${product.id}`}
+      image={imageUrl || undefined}
+      type="product"
+    />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

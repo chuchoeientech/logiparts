@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { productsApi, productImageUrl, type ProductApi } from '../api/products';
 import { Product } from '../types';
 import ProductCard from '../components/ProductCard';
+import Seo from '../components/Seo';
 import { Package, ShoppingCart, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 
@@ -256,6 +257,11 @@ export default function Home() {
 
   return (
     <div style={{ marginTop: '80px' }}>
+      <Seo
+        title="Logisparts | Repuestos Automotrices en Paraguay"
+        description="Distribuidor de repuestos automotrices originales y alternativos en Paraguay. Faros, parrillas, paragolpes, guardabarros y más, con los mejores precios del mercado."
+        path="/"
+      />
       {/* 1° — Productos en Oferta */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">

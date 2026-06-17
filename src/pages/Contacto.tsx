@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, MessageCircle, Send, Star } from 'lucide-react';
+import Seo from '../components/Seo';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -113,6 +114,11 @@ export default function Contacto() {
       transition={{ duration: 0.4 }}
       className="min-h-screen"
     >
+      <Seo
+        title="Contacto"
+        description="Contactá a Logisparts en Asunción y Lambaré. Teléfono, WhatsApp y correo para consultas sobre repuestos automotrices. Lunes a viernes 08:30 a 17:30."
+        path="/contacto"
+      />
       {/* Hero */}
       <div className="relative h-[548px] pt-[128px] flex items-center justify-center overflow-hidden">
         <div

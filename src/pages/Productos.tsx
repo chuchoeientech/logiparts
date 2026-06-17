@@ -5,6 +5,7 @@ import { categoriesApi, type CategoryApi } from '../api/categories';
 import { productsApi, productImageUrl, type ProductApi } from '../api/products';
 import { Product } from '../types';
 import ProductCard from '../components/ProductCard';
+import Seo from '../components/Seo';
 import { ChevronLeft, ChevronRight, Car, Filter, X, Package, Search, Layers } from 'lucide-react';
 import { vehiclesApi, type VehicleApi } from '../api/vehicles';
 
@@ -361,6 +362,11 @@ export default function Productos() {
       className="bg-[#F8FAFC] overflow-x-hidden"
       style={{ marginTop: '80px', minHeight: 'calc(100vh - 80px)' }}
     >
+      <Seo
+        title="Catálogo de Repuestos Automotrices"
+        description="Explorá nuestro catálogo de repuestos automotrices: faros, parrillas, paragolpes, guardabarros, capots y más. Filtrá por marca, modelo y precio. Envíos en todo Paraguay."
+        path="/productos"
+      />
       <div className="bg-black overflow-hidden relative border-b border-primary/20">
         <div className="absolute inset-0 bg-primary/5 pattern-grid-lg" />
         <div className="container mx-auto px-4 py-16 md:py-20 relative">

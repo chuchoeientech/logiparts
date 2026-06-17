@@ -1,14 +1,134 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Logisparts Auto Parts Web Catalog</title>
-  <meta property="og:image" content="https://bolt.new/static/og_default.png" />
+
+  <!-- Primary Meta Tags -->
+  <title>Logisparts | Repuestos Automotrices en Paraguay</title>
+  <meta name="title" content="Logisparts | Repuestos Automotrices en Paraguay" />
+  <meta name="description"
+    content="Logisparts, Compañía de Servicios Integrados S.A. Distribuidor de repuestos automotrices originales y alternativos en Paraguay. Faros, parrillas, paragolpes, guardabarros, capots y más. Casa central en Asunción y sucursal en Lambaré." />
+  <meta name="keywords"
+    content="repuestos automotrices, repuestos Paraguay, autopartes Asunción, faros, parrillas, paragolpes, guardabarros, capots, repuestos originales, repuestos alternativos, Logisparts, repuestos Lambaré" />
+  <meta name="author" content="Logisparts - Compañía de Servicios Integrados S.A." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="language" content="Spanish" />
+  <link rel="canonical" href="https://www.logisparts.com.py/" />
+
+  <!-- Geo -->
+  <meta name="geo.region" content="PY-1" />
+  <meta name="geo.placename" content="Asunción, Paraguay" />
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#2E2A80" />
+
+  <!-- Favicons / Icons -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Logisparts" />
+  <meta property="og:locale" content="es_PY" />
+  <meta property="og:url" content="https://www.logisparts.com.py/" />
+  <meta property="og:title" content="Logisparts | Repuestos Automotrices en Paraguay" />
+  <meta property="og:description"
+    content="Distribuidor de repuestos automotrices originales y alternativos en Paraguay. Calidad, confianza y los mejores precios del mercado." />
+  <meta property="og:image" content="https://www.logisparts.com.py/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Logisparts - Compañía de Servicios Integrados S.A." />
+
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://bolt.new/static/og_default.png" />
+  <meta name="twitter:title" content="Logisparts | Repuestos Automotrices en Paraguay" />
+  <meta name="twitter:description"
+    content="Distribuidor de repuestos automotrices originales y alternativos en Paraguay. Calidad, confianza y los mejores precios del mercado." />
+  <meta name="twitter:image" content="https://www.logisparts.com.py/og-image.png" />
+
+  <!-- Structured Data: Organization / AutoPartsStore -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AutoPartsStore",
+    "name": "Logisparts - Compañía de Servicios Integrados S.A.",
+    "alternateName": "Logisparts",
+    "url": "https://www.logisparts.com.py/",
+    "logo": "https://www.logisparts.com.py/icon-512.png",
+    "image": "https://www.logisparts.com.py/og-image.png",
+    "description": "Distribuidor de repuestos automotrices originales y alternativos en Paraguay.",
+    "email": "ventas@logisparts.com.py",
+    "telephone": "+595974420367",
+    "priceRange": "₲₲",
+    "currenciesAccepted": "PYG",
+    "areaServed": {
+      "@type": "Country",
+      "name": "Paraguay"
+    },
+    "sameAs": [
+      "https://www.facebook.com/greisinger86/",
+      "https://www.instagram.com/logispartspy",
+      "https://www.tiktok.com/@logispartspy"
+    ],
+    "department": [
+      {
+        "@type": "AutoPartsStore",
+        "name": "Logisparts - Casa Central",
+        "telephone": "+595974420367",
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "08:30",
+            "closes": "17:30"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Saturday",
+            "opens": "08:30",
+            "closes": "12:00"
+          }
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Avda. Eusebio Ayala 1715 casi Kubitschek",
+          "addressLocality": "Asunción",
+          "addressCountry": "PY"
+        }
+      },
+      {
+        "@type": "AutoPartsStore",
+        "name": "Logisparts - Sucursal Bruno Guggiari",
+        "telephone": "+595974543211",
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "08:30",
+            "closes": "17:30"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": "Saturday",
+            "opens": "08:30",
+            "closes": "12:00"
+          }
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Juan María Vianney 1748 casi Avda. Bruno Guggiari",
+          "addressLocality": "Lambaré",
+          "addressCountry": "PY"
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, Target, Award, Users, CheckCircle, TrendingUp, Star } from 'lucide-react';
+import Seo from '../components/Seo';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -66,6 +67,11 @@ export default function Nosotros() {
       transition={{ duration: 0.4 }}
       className="min-h-screen"
     >
+      <Seo
+        title="Sobre Nosotros"
+        description="Logisparts es una empresa paraguaya líder en la distribución de repuestos automotrices originales y alternativos, con más de 10 años de experiencia en el mercado nacional."
+        path="/nosotros"
+      />
       {/* Hero */}
       <div className="relative h-[648px] pt-[128px] flex items-center justify-center overflow-hidden">
         <div

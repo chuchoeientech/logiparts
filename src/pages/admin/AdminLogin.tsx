@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import { Lock } from 'lucide-react';
+import Seo from '../../components/Seo';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -21,6 +22,7 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-dark-gray flex items-center justify-center p-4">
+      <Seo title="Acceso Administrador" noindex />
       <div className="w-full max-w-sm bg-white rounded-xl shadow-lg p-8">
         <div className="flex justify-center mb-6">
           <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center">
