@@ -159,8 +159,6 @@ function OfertasCarousel({ products }: { products: Product[] }) {
     );
   }
 
-  const next = (current + 1) % total;
-
   return (
     <div
       onMouseEnter={() => setPaused(true)}
@@ -177,14 +175,8 @@ function OfertasCarousel({ products }: { products: Product[] }) {
             animate="center"
             exit="exit"
             transition={{ type: 'tween', ease: 'easeInOut', duration: 0.35 }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch"
           >
             <FeaturedProductCard product={products[current]} index={0} />
-            {total > 1 && (
-              <div className="hidden lg:block">
-                <FeaturedProductCard product={products[next]} index={1} />
-              </div>
-            )}
           </motion.div>
         </AnimatePresence>
       </div>

@@ -42,7 +42,7 @@ export default function Contacto() {
 
   const handleWhatsApp = () => {
     const message = 'Hola, me gustaría obtener más información sobre sus productos.';
-    const whatsappUrl = `https://wa.me/595981234567?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/595971191016?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -73,6 +73,9 @@ export default function Contacto() {
           </a>
           <a href="tel:+5950974543211" className="block text-gray-500 hover:text-primary transition-colors">
             0974-543211
+          </a>
+          <a href="tel:+5950974543211" className="block text-gray-500 hover:text-primary transition-colors">
+            0971-191016
           </a>
         </div>
       ),
@@ -382,7 +385,7 @@ export default function Contacto() {
               </div>
               <div className="h-64 overflow-hidden">
                 <iframe
-                  src="https://maps.google.com/maps?q=Juan+Maria+Vianney+1748+Lambar%C3%A9+Paraguay&output=embed&z=16"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d673.269875280385!2d-57.61312542107932!3d-25.31755480365915!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x945da9faedc6eeed%3A0xdfa74e54e6070683!2sLogisparts!5e0!3m2!1sen!2spy!4v1786385236342!5m2!1sen!2spy"
                   width="100%"
                   height="100%"
                   style={{ border: 0, filter: 'grayscale(15%)' }}
