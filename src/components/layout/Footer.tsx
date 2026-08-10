@@ -113,7 +113,7 @@ export default function Footer() {
               <li className="flex items-center gap-2">
                 <Mail size={20} className="text-primary flex-shrink-0" />
                 <a href="mailto:info@logisparts.com" className="text-gray-400 hover:text-primary transition-colors">
-                  info@logisparts.com
+                  administracion@logisparts.com.py
                 </a>
               </li>
             </ul>
