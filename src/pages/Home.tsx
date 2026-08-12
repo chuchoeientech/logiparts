@@ -124,21 +124,28 @@ const slideVariants = {
   exit: (dir: number) => ({ x: dir > 0 ? '-100%' : '100%', opacity: 0 }),
 };
 
+const PAGE_SIZE = 2;
+
 function OfertasCarousel({ products }: { products: Product[] }) {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const [direction, setDirection] = useState(1);
-  const total = products.length;
+
+  const pages: Product[][] = [];
+  for (let i = 0; i < products.length; i += PAGE_SIZE) {
+    pages.push(products.slice(i, i + PAGE_SIZE));
+  }
+  const totalPages = pages.length;
 
   const goNext = useCallback(() => {
     setDirection(1);
-    setCurrent(c => (c + 1) % total);
-  }, [total]);
+    setCurrent(c => (c + 1) % totalPages);
+  }, [totalPages]);
 
   const goPrev = useCallback(() => {
     setDirection(-1);
-    setCurrent(c => (c - 1 + total) % total);
-  }, [total]);
+    setCurrent(c => (c - 1 + totalPages) % totalPages);
+  }, [totalPages]);
 
   const goTo = useCallback((i: number, cur: number) => {
     setDirection(i > cur ? 1 : -1);
@@ -146,12 +153,12 @@ function OfertasCarousel({ products }: { products: Product[] }) {
   }, []);
 
   useEffect(() => {
-    if (paused || total <= 1) return;
+    if (paused || totalPages <= 1) return;
     const id = setInterval(goNext, 4000);
     return () => clearInterval(id);
-  }, [paused, total, goNext]);
+  }, [paused, totalPages, goNext]);
 
-  if (total === 0) {
+  if (products.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-600 text-lg">No hay productos en oferta disponibles en este momento.</p>
@@ -175,18 +182,21 @@ function OfertasCarousel({ products }: { products: Product[] }) {
             animate="center"
             exit="exit"
             transition={{ type: 'tween', ease: 'easeInOut', duration: 0.35 }}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-6"
           >
-            <FeaturedProductCard product={products[current]} index={0} />
+            {pages[current].map((product, i) => (
+              <FeaturedProductCard key={product.id} product={product} index={i} />
+            ))}
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* Controls */}
-      {total > 1 && (
+      {totalPages > 1 && (
         <div className="flex items-center justify-between mt-8">
           {/* Dots */}
           <div className="flex gap-2 items-center">
-            {products.map((_, i) => (
+            {pages.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i, current)}
